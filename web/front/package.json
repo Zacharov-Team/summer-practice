@@ -6,7 +6,7 @@
   "scripts": {
     "prestart": "npm run build",
     "build": "webpack",
-    "start": "npx prettier --write ./public/ && node ./server/index.js",
+    "start": "node ./server/index.js",
     "lint": "npx prettier --write ./public && npx eslint ./public",
     "precommit": "lint-staged",
     "prepare": "husky"

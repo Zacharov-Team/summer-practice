@@ -1,23 +1,23 @@
-import "./NeuralNetworkProcessing.scss";
+import "./DataProcessing.scss";
 import DivComponent from "../DummyComponents/DivComponent";
 import NoneInnerTextComponent from "../DummyComponents/NoneInnerTextComponent";
 import PlotComponent from "../DummyComponents/PlotComponent";
 import HasInnerTextComponent from "../DummyComponents/HasInnerTextComponent";
 import { DPService } from "../../modules/APIService";
 
-class NeuralNetworkProcessing {
+class DataProcessing {
     #eventBus;
 
     constructor(eventBus) {
         this.#eventBus = eventBus;
 
-        this.#eventBus.addEventListener("clickedRenderNNPPage", () => {
+        this.#eventBus.addEventListener("clickedRenderDataProcessingPage", () => {
             this.render();
         });
     }
 
     async render() {
-        if (document.getElementById("nnp")) {
+        if (document.getElementById("dp")) {
             return;
         }
 
@@ -38,11 +38,11 @@ class NeuralNetworkProcessing {
 
         const resultTags = new DivComponent({ id: "result-tags" }, ["result-tags"]);
 
-        const nnpDiv = document.createElement("div");
-        nnpDiv.setAttribute("id", "nnp");
-        nnpDiv.classList.add("nnp");
-        (nnpDiv.innerHTML =
-            new DivComponent({}, ["nnp-tags"], "", [
+        const dpDiv = document.createElement("div");
+        dpDiv.setAttribute("id", "dp");
+        dpDiv.classList.add("dp");
+        (dpDiv.innerHTML =
+            new DivComponent({}, ["dp-tags"], "", [
                 new DivComponent(
                     { id: "tags-field" },
                     ["tags-field"],
@@ -87,37 +87,6 @@ class NeuralNetworkProcessing {
                                 ),
                             ]
                         ),
-                        new DivComponent(
-                            { id: "second-string-variants" },
-                            ["string-variants"],
-                            "",
-                            [
-                                new DivComponent(
-                                    { id: "bot-variant" },
-                                    ["variant-div"],
-                                    "Выбор бота",
-                                    [
-                                        new NoneInnerTextComponent(
-                                            "input",
-                                            { type: "text" },
-                                            ["variant__input"]
-                                        ),
-                                    ]
-                                ),
-                                new DivComponent(
-                                    { id: "weight-variant" },
-                                    ["variant-div"],
-                                    "Вес",
-                                    [
-                                        new NoneInnerTextComponent(
-                                            "input",
-                                            { type: "text" },
-                                            ["variant__input"]
-                                        ),
-                                    ]
-                                ),
-                            ]
-                        ),
                     ]
                 ),
                 new DivComponent(
@@ -135,7 +104,7 @@ class NeuralNetworkProcessing {
                 ),
             ])).render() + new PlotComponent().render());
 
-        document.body.appendChild(nnpDiv);
+        document.body.appendChild(dpDiv);
 
         tags.forEach((tag) => {
             tag.addListeners([{
@@ -159,4 +128,4 @@ class NeuralNetworkProcessing {
     }
 }
 
-export default NeuralNetworkProcessing;
+export default DataProcessing;

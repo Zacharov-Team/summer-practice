@@ -1,32 +1,46 @@
-import ButtonComponent from "../DummyComponents/ButtonComponent";
 import DivComponent from "../DummyComponents/DivComponent";
 import "./rawdata.scss";
 
 class RawData {
-  #rawsCount;
+    #rawsCount;
+    #eventBus;
 
-  constructor(rawsCount) {
-    this.#rawsCount = rawsCount;
-  }
+    constructor(eventBus, rawsCount) {
+        this.#rawsCount = rawsCount;
+        this.#eventBus = eventBus;
 
-  render() {
-    if (document.getElementById("rawData")) {
-      return;
+        this.#eventBus.addEventListener("clickedRenderRawDataPage", () => {
+            this.render();
+        });
     }
 
-    const rawsCount = [];
+    render() {
+        if (document.getElementById("rawData")) {
+            return;
+        }
 
-    for (let i = 0; i < this.#rawsCount; ++i) {
-      rawsCount.push(new DivComponent({}, ["raw-item"], "", []));
+        while (document.body.childNodes.length > 1) {
+            document.body.removeChild(document.body.lastChild);
+        }
+
+        const rawsCount = [];
+
+        for (let i = 0; i < this.#rawsCount; ++i) {
+            rawsCount.push(new DivComponent({}, ["raw-item"], "", []));
+        }
+
+        const rawDataDiv = document.createElement("div");
+        rawDataDiv.setAttribute("id", "raw-data");
+        rawDataDiv.classList.add("raw-data");
+        rawDataDiv.innerHTML = new DivComponent(
+            {},
+            ["raw-column"],
+            "",
+            rawsCount
+        ).render();
+
+        document.body.appendChild(rawDataDiv);
     }
-
-    document.body.innerHTML += new DivComponent(
-      { id: "raw-data" },
-      ["raw-data"],
-      "",
-      [new DivComponent({}, ["raw-column"], "", rawsCount)],
-    ).render();
-  }
 }
 
 export default RawData;

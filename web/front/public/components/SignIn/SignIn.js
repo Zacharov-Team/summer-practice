@@ -1,44 +1,79 @@
 import "./SignIn.scss";
-import ButtonComponent from "../DummyComponents/ButtonComponent";
 import DivComponent from "../DummyComponents/DivComponent";
-import InputComponent from "../DummyComponents/InputComponent";
+import HasInnerTextComponent from "../DummyComponents/HasInnerTextComponent";
+import NoneInnerTextComponent from "../DummyComponents/NoneInnerTextComponent";
 
 class SignIn {
-  render() {
-    if (document.getElementById("sign-in-form")) {
-      return;
+    #eventBus;
+
+    constructor(eventBus) {
+        this.#eventBus = eventBus;
+
+        this.#eventBus.addEventListener("clickedRenderSignInPage", () => {
+            this.render();
+        });
     }
 
-    document.body.innerHTML = new DivComponent(
-      { id: "sign-in-page" },
-      ["sign-in-page"],
-      "",
-      [
-        new DivComponent({ id: "sign-in-form" }, ["sign-in-form"], "", [
-          new InputComponent(
-            { id: "mail-input", placeholder: "Почта", type: "email" },
-            ["sign-in-form__input"],
-          ),
-          new InputComponent(
-            { id: "password-input", placeholder: "Пароль", type: "password" },
-            ["sign-in-form__input"],
-          ),
-          new ButtonComponent(
-            { id: "sign-in-form-button" },
-            ["sign-in-form__button"],
-            "Войти",
-          ),
-        ]),
-        new DivComponent({}, ["sign-in-go-to-register"], "", [
-          new DivComponent(
+    render() {
+        if (document.getElementById("sign-in-form")) {
+            return;
+        }
+
+        while (document.body.childNodes.length > 1) {
+            document.body.removeChild(document.body.lastChild);
+        }
+
+        const divRegister = new DivComponent(
             { id: "choose-register" },
             ["sign-in-choose-register"],
-            "Зарегистрироваться",
-          ),
-        ]),
-      ],
-    ).render();
-  }
+            "Зарегистрироваться"
+        );
+
+        const signInDiv = document.createElement("div");
+        signInDiv.setAttribute("id", "sign-in-page");
+        signInDiv.classList.add("sign-in-page");
+        signInDiv.innerHTML =
+            new DivComponent({ id: "sign-in-form" }, ["sign-in-form"], "", [
+                new NoneInnerTextComponent(
+                    "input",
+                    {
+                        id: "mail-input",
+                        placeholder: "Почта",
+                        type: "email",
+                    },
+                    ["sign-in-form__input"]
+                ),
+                new NoneInnerTextComponent(
+                    "input",
+                    {
+                        id: "password-input",
+                        placeholder: "Пароль",
+                        type: "password",
+                    },
+                    ["sign-in-form__input"]
+                ),
+                new HasInnerTextComponent(
+                    "button",
+                    { id: "sign-in-form-button" },
+                    ["sign-in-form__button"],
+                    "Войти"
+                ),
+            ]).render() +
+            new DivComponent({}, ["sign-in-go-to-register"], "", [
+                divRegister,
+            ]).render();
+
+        document.body.appendChild(signInDiv);
+
+        divRegister.addListeners([
+            {
+                event: "click",
+                func: () => {
+                    this.#eventBus.emit("clickedRenderRegisterPage");
+                },
+            },
+        ]);
+    }
 }
 
 export default SignIn;
