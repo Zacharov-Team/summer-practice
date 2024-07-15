@@ -1,0 +1,34 @@
+.nnp {
+  max-width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 100px 50px 0;
+  box-sizing: border-box;
+
+  &-left-column {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-grow: 0;
+  }
+
+  &-right-column {
+    display: flex;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  &__ad-image {
+    width: 440px;
+    height: 330px;
+  }
+
+  &-item {
+    width: 280px;
+    height: 100px;
+    background: #d9d9d9;
+    border-radius: 7px;
+    margin: 5px;
+  }
+}
