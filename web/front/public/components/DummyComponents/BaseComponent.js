@@ -1,127 +1,138 @@
 class BaseComponent {
-  classes;
-  attrs;
-  innerText;
-  innerComponents;
+    classes;
+    attrs;
+    innerText;
+    innerComponents;
 
-  constructor(attrs = {}, classes = [], innerText = "", innerComponents = []) {
-    this.attrs = attrs;
-    this.classes = classes;
-    this.innerText = innerText;
-    this.innerComponents = innerComponents;
-  }
-
-  toggleText(newInnerText = "") {
-    this.innerText = newInnerText;
-  }
-
-  addInnerComponent(newComponent, place = 1) {
-    if (place === 1) {
-      this.innerComponents.push(newComponent);
-    } else {
-      this.innerComponents.unshift(newComponent);
+    constructor(
+        attrs = {},
+        classes = [],
+        innerText = "",
+        innerComponents = []
+    ) {
+        this.attrs = attrs;
+        this.classes = classes;
+        this.innerText = innerText;
+        this.innerComponents = innerComponents;
     }
-  }
 
-  removeInnerComponent(place = 1, count = 1) {
-    if (count === -1) {
-      this.innerComponents = [];
-    } else if (place === 1) {
-      this.innerComponents.pop();
-    } else {
-      this.innerComponents.shift();
+    toggleText(newInnerText = "") {
+        this.innerText = newInnerText;
     }
-  }
 
-  getAttr(attr) {
-    return this.attrs[attr];
-  }
+    getText() {
+        return this.innerText;
+    }
 
-  toggleAttr(attr, value, force = 0) {
-    switch (force) {
-      case -1:
-        delete this.attrs[attr];
-        break;
-      case 1:
-        this.attrs[attr] = value;
-        break;
-      case 0:
-        if (attr in this.attrs) {
-          delete this.attrs[attr];
+    addInnerComponent(newComponent, place = 1) {
+        if (place === 1) {
+            this.innerComponents.push(newComponent);
         } else {
-          this.attrs[attr] = value;
+            this.innerComponents.unshift(newComponent);
         }
     }
-  }
 
-  toggleClass(componentClass, force = 0) {
-    const place = this.classes.indexOf(componentClass);
+    removeInnerComponent(attr, value) {
+        this.innerComponents.forEach((comp, ind) => {
+            if (comp.getAttr(attr) === value) {
+                this.innerComponents.splice(ind);
+            }
+        });
+    }
 
-    switch (force) {
-      case -1:
-        if (place !== -1) {
-          this.classes.splice(place, 1);
+    getAttr(attr) {
+        return this.attrs[attr];
+    }
+
+    toggleAttr(attr, value, force = 0) {
+        switch (force) {
+            case -1:
+                delete this.attrs[attr];
+                break;
+            case 1:
+                this.attrs[attr] = value;
+                break;
+            case 0:
+                if (attr in this.attrs) {
+                    delete this.attrs[attr];
+                } else {
+                    this.attrs[attr] = value;
+                }
+        }
+    }
+
+    toggleClass(componentClass, force = 0) {
+        const place = this.classes.indexOf(componentClass);
+
+        switch (force) {
+            case -1:
+                if (place !== -1) {
+                    this.classes.splice(place, 1);
+                }
+
+                break;
+            case 1:
+                if (place === -1) {
+                    this.classes.push(componentClass);
+                }
+
+                break;
+            case 0:
+                if (place === -1) {
+                    this.classes.push(componentClass);
+                } else {
+                    this.classes.splice(place, 1);
+                }
+        }
+    }
+
+    hasClass(componentClass) {
+        return this.classes.includes(componentClass);
+    }
+
+    update() {
+        const component = document.getElementById(this.attrs.id);
+
+        if (!component) {
+            this.render();
+            return;
         }
 
-        break;
-      case 1:
-        if (place === -1) {
-          this.classes.push(componentClass);
+        const componentAttrs = component.attributes;
+        const componentClasses = Array.from(component.classList);
+
+        for (const key of Object.keys(componentAttrs)) {
+            if (!(key in this.attrs)) {
+                component.removeAttribute(key);
+            }
         }
 
-        break;
-      case 0:
-        if (place === -1) {
-          this.classes.push(componentClass);
-        } else {
-          this.classes.splice(place, 1);
+        for (let [key, value] of Object.entries(this.attrs)) {
+            component.setAttribute(key, String(value));
+        }
+
+        for (let i of componentClasses) {
+            if (!this.classes.includes(i)) {
+                component.classList.remove(i);
+            }
+        }
+
+        for (let i of this.classes) {
+            component.classList.add(i);
         }
     }
-  }
 
-  update() {
-    const component = document.getElementById(this.attrs.id);
-
-    if (!component) {
-      this.render();
-      return;
+    render() {
+        console.log("Parent's render");
     }
 
-    const componentAttrs = component.attributes;
-    const componentClasses = Array.from(component.classList);
+    addListeners(events) {
+        const component = document.getElementById(this.attrs.id);
 
-    for (const key of Object.keys(componentAttrs)) {
-      if (!(key in this.attrs)) {
-        component.removeAttribute(key);
-      }
+        events.forEach(({ event, func }) => {
+            component?.addEventListener(event, func);
+        });
     }
-
-    for (let [key, value] of Object.entries(this.attrs)) {
-      component.setAttribute(key, String(value));
-    }
-
-    for (let i of componentClasses) {
-      if (!this.classes.includes(i)) {
-        component.classList.remove(i);
-      }
-    }
-
-    for (let i of this.classes) {
-      component.classList.add(i);
-    }
-  }
-
-  render() {
-    console.log("Parent's render");
-  }
-
-  addListeners(events) {
-    const component = document.getElementById(this.componentAttrs.id);
-
-    events.forEach(({ event, func }) => {
-      component?.addEventListener(event, func);
-    });
-  }
 }
 
 export default BaseComponent;

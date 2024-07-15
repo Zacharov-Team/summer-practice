@@ -1,47 +1,44 @@
 .header {
-  background-color: #9d9393;
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  height: 80px;
-  justify-content: space-around;
-  padding: 0 50px;
+    background-color: #9d9393;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    height: 80px;
+    justify-content: space-around;
+    padding: 0 50px;
 }
 
 .process-types {
-  display: flex;
-  flex-grow: 1;
-  justify-content: space-evenly;
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-evenly;
 }
 
 .process-types__button {
-  background-color: #d9d9d9;
-  border: none;
-  border-radius: 4px;
-  margin: 0 10px;
-  padding: 10px;
-
-  &_activated {
-    background-color: #e9b6b6;
+    background-color: #d9d9d9;
     border: none;
-    border-radius: 2px;
+    border-radius: 6px;
     margin: 0 10px;
-  }
+    padding: 10px;
+
+    &_activated {
+        background-color: #e9b6b6;
+    }
 }
 
 .authorize-types__button-sign-in,
 .authorize-types__button-register {
-  border-radius: 5px;
-  border: none;
-  padding: 4px;
-  margin: 0 4px;
+    border-radius: 5px;
+    border: none;
+    padding: 4px;
+    margin: 0 4px;
 }
 
 .authorize-types__button-sign-in {
-  background-color: white;
+    background-color: white;
 }
 
 .authorize-types__button-register {
-  background-color: black;
-  color: white;
+    background-color: black;
+    color: white;
 }
