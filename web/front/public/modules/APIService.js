@@ -2,6 +2,7 @@ export class AuthService {
     baseUrl = '/auth/';
 
     async enterIntoAccount(email, password) {
+        /*
         const response = await fetch(this.baseUrl, {
             method: 'POST',
             credentials: 'include',
@@ -10,9 +11,16 @@ export class AuthService {
 
         const data = await response.json();
 
-        console.log(data.entered);
+        console.log(data.entered);*/
 
-        return true;
+        if (email === 'alex@gmail.com' && password === 'zakharovteam') {
+            return {
+                fio: 'Горбунов Алексей Сергеевич',
+                email: email,
+            };
+        }
+
+        return null;
     }
 
     async createAnAccount(name, email, password) {

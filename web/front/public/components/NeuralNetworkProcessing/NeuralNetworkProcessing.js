@@ -133,7 +133,7 @@ class NeuralNetworkProcessing {
                         ),
                     ]
                 ),
-            ])).render() + new PlotComponent().render());
+            ])).render());
 
         document.body.appendChild(nnpDiv);
 
@@ -156,6 +156,39 @@ class NeuralNetworkProcessing {
                 },
             }]);
         });
+
+        console.log('kek')
+
+        const plotDiv = document.createElement('div');
+        
+        plotDiv.setAttribute('id', 'plot-div');
+        plotDiv.classList.add('plot-div');
+
+        document.body.appendChild(plotDiv);
+
+        let trace1 = {
+            x: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            y: [10, 15, 13, 17, 11, 8, 4, -2],
+            mode: 'markers',
+            type: 'scatter',
+            marker: {
+                size: 20,
+            }
+          };
+          
+          let data = [trace1];
+
+          let layout = {
+            autosize: false,
+            width: 1000,
+            height: 500,
+            margin: {
+              pad: 4
+            },
+            title: 'Zakharov team IQ'
+          };
+          
+          Plotly.newPlot('plot-div', data, layout);
     }
 }
 

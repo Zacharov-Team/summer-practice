@@ -9,6 +9,7 @@ import SignIn from "./components/SignIn/SignIn";
 import Register from "./components/Register/Register";
 import EventBus from "./modules/EventBus";
 import DataProcessing from "./components/DataProcessing/DataProcessing";
+import User from "./modules/User";
 
 const eventBus = new EventBus([
     "clickedRenderSignInPage",
