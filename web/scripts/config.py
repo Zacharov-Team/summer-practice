@@ -1,0 +1,5 @@
+host = "127.0.0.1"
+port = "5438"
+user = "admin"
+password = "1"
+db_name = "postgres"
