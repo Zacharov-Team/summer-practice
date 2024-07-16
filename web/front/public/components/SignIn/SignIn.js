@@ -2,6 +2,7 @@ import "./SignIn.scss";
 import DivComponent from "../DummyComponents/DivComponent";
 import HasInnerTextComponent from "../DummyComponents/HasInnerTextComponent";
 import NoneInnerTextComponent from "../DummyComponents/NoneInnerTextComponent";
+import {validateEmail} from '../../modules/validators';
 
 class SignIn {
     #eventBus;
@@ -29,20 +30,22 @@ class SignIn {
             "Зарегистрироваться"
         );
 
+        const mailInput = new NoneInnerTextComponent(
+            "input",
+            {
+                id: "mail-input",
+                placeholder: "Почта",
+                type: "email",
+            },
+            ["sign-in-form__input"]
+        );
+
         const signInDiv = document.createElement("div");
         signInDiv.setAttribute("id", "sign-in-page");
         signInDiv.classList.add("sign-in-page");
         signInDiv.innerHTML =
             new DivComponent({ id: "sign-in-form" }, ["sign-in-form"], "", [
-                new NoneInnerTextComponent(
-                    "input",
-                    {
-                        id: "mail-input",
-                        placeholder: "Почта",
-                        type: "email",
-                    },
-                    ["sign-in-form__input"]
-                ),
+                mailInput,
                 new NoneInnerTextComponent(
                     "input",
                     {
@@ -72,6 +75,19 @@ class SignIn {
                     this.#eventBus.emit("clickedRenderRegisterPage");
                 },
             },
+        ]);
+
+        const emailInput = document.getElementById(mailInput.getAttr('id'));
+
+        mailInput.addListeners([
+            {
+                event: 'focusout',
+                func: () => {
+                    if (!validateEmail(emailInput.value)) {
+                        alert('mda');
+                    }
+                },
+            }
         ]);
     }
 }
