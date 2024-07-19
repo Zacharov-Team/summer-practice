@@ -1,8 +1,16 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.contrib.auth.models import User
 
 
 # Create your models here.
+
+class CustomUser(User):
+    role = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.username})"
+
 
 class ToolLocation(models.Model):
     id = models.AutoField(primary_key=True)
@@ -18,7 +26,7 @@ class Tool(models.Model):
 
 class AggregatedData(models.Model):
     id = models.AutoField(primary_key=True)
-    data_date = models.DateTimeField()
+    date = models.DateTimeField()
 
     data_values = ArrayField(models.DecimalField(max_digits=10, decimal_places=2))
 
@@ -28,5 +36,5 @@ class AggregatedData(models.Model):
 
 class ModifiedData(models.Model):
     id = models.AutoField(primary_key=True)
-    data_values = ArrayField(models.IntegerField())
+    data = ArrayField(models.IntegerField())
     aggregated_data = models.OneToOneField(AggregatedData, on_delete=models.CASCADE)
