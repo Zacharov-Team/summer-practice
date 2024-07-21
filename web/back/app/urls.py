@@ -5,6 +5,5 @@ from app.views import *
 from app import views
 
 urlpatterns = [
-    path('api-token-auth/', CustomAuthToken.as_view()),
-    path('login/', LoginHandler.as_view()),
+    path('login/', views.log_in, name='login'),
 ]
