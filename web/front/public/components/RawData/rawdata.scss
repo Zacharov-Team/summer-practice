@@ -1,0 +1,20 @@
+.raw-data {
+    display: flex;
+    margin: 20px;
+    justify-content: start;
+}
+
+.raw-column {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 70%;
+}
+
+.raw-item {
+    width: 280px;
+    height: 100px;
+    background-color: #d9d9d9;
+    border-radius: 7px;
+    margin: 5px;
+}
