@@ -6,4 +6,5 @@ from app import views
 
 urlpatterns = [
     path('login/', views.log_in, name='login'),
+
 ]

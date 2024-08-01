@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+
+  blur-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - driver: nvidia
+#              count: 1
+#              capabilities: [gpu]
+    volumes:
+      - ./models:/models
+#    environment:
+#      - NVIDIA_VISIBLE_DEVICES=all
+    image: blur-backend:latest

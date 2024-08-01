@@ -33,3 +33,6 @@ def log_in(request):
     if request.method == 'GET':
         csrf_token = get_token(request)
         return JsonResponse({'csrf_token': csrf_token})
+
+
+# def func():
