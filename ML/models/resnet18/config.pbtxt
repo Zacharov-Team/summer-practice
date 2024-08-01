@@ -10,7 +10,7 @@ input [
 ]
 output [
     {
-        name: "output_tensor"
+        name: "output_0"
         data_type: TYPE_FP32
         dims: [64]
     }
