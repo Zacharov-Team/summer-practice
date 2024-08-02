@@ -13,7 +13,7 @@ class Command(BaseCommand):
             url="0.0.0.0:8001"
         )
 
-        img = ModifiedData.objects.get(pk=1)
+        img = AggregatedData.objects.get(pk=1)
 
         input_data = np.array(img.data, dtype=np.float32)
 
