@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.middleware.csrf import get_token
-from models import ModifiedData
+from app.models import ModifiedData
 
 
 def log_in(request):
