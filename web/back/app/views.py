@@ -82,7 +82,7 @@ def log_out(request):
     return redirect(reverse('login'))
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def get_modified(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
