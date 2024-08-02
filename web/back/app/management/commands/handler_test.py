@@ -13,9 +13,9 @@ class Command(BaseCommand):
             url="0.0.0.0:8001"
         )
 
-        img = AggregatedData.objects.get(pk=1)
+        img = ModifiedData.objects.get(pk=1)
 
-        input_data = np.array(img.data_values, dtype=np.float32)
+        input_data = np.array(img.data, dtype=np.float32)
 
         input_data = input_data.reshape([-1] + list(input_data.shape))
 
