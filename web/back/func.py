@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import tritonclient.grpc as grpcclient
 
+
 def model_handler():
     triton_client = grpcclient.InferenceServerClient(
         url="0.0.0.0:8001"
