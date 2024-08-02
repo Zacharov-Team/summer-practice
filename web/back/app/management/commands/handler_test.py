@@ -8,7 +8,7 @@ from back.settings import BASE_DIR
 
 
 class Command(BaseCommand):
-    def handler_test(self, *args, **options):
+    def handle(self, *args, **options):
         triton_client = grpcclient.InferenceServerClient(
             url="0.0.0.0:8001"
         )
