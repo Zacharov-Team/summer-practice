@@ -35,4 +35,3 @@ class ModifiedData(models.Model):
     id = models.AutoField(primary_key=True)
     data = ArrayField(models.IntegerField())
     date = models.DateTimeField()
-    aggregated_data = models.OneToOneField(AggregatedData, on_delete=models.CASCADE)

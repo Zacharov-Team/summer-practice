@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.db.backends.base.base.BaseDatabaseWrapper import timezone
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.middleware.csrf import get_token
@@ -39,16 +40,20 @@ def log_in(request):
 import numpy as np
 import torch
 import tritonclient.grpc as grpcclient
+from PIL import Image
 
 
-def model_handler():
+@login_required(login_url='login')
+def handle_model(request):
+    file = request.FILES.get('img')
+    if not file:
+        return JsonResponse({'status': 'error', 'message': 'No image uploaded'})
     triton_client = grpcclient.InferenceServerClient(
         url="0.0.0.0:8001"
     )
 
-    # img = (torch.rand(128, 336, 1) * 255)
-    img = ModifiedData.objects.get(pk=1)
-    input_data = img.numpy().astype(np.float32)
+    img = Image.open(file)
+    input_data = img.cpu().numpy().astype(np.float32)
     input_data = input_data.reshape([-1] + list(input_data.shape))
     inputs = [grpcclient.InferInput("keras_tensor", input_data.shape, "FP32")]
     inputs[0].set_data_from_numpy(input_data)
@@ -59,8 +64,11 @@ def model_handler():
     result = triton_client.infer(
         model_name="resnet18", inputs=inputs, outputs=outputs
     )
-    print(result.as_numpy("output_0"))
+    out = result.as_numpy()
+    print(out)
 
+    md = ModifiedData.objects.create(data=out.tolist(), date=timezone.now())
+    md.save()
+    res = {"result": out.tolist()}
 
-def handle_model(request):
-    return model_handler()
+    return res
