@@ -7,7 +7,7 @@ class AggregatedDataAdmin(admin.ModelAdmin):
 
 
 class ModifiedDataAdmin(admin.ModelAdmin):
-    list_display = ('id', 'data', 'aggregated_data')
+    list_display = ('id', 'data', 'date')
 
 
 class ToolLocationAdmin(admin.ModelAdmin):

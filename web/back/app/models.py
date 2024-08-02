@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 
 class CustomUser(User):
     role = models.CharField(max_length=50)
+
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.username})"
 
@@ -30,8 +31,7 @@ class AggregatedData(models.Model):
     data_values = ArrayField(models.DecimalField(max_digits=20, decimal_places=15))
 
 
-
 class ModifiedData(models.Model):
     id = models.AutoField(primary_key=True)
     data = ArrayField(models.IntegerField())
-    aggregated_data = models.OneToOneField(AggregatedData, on_delete=models.CASCADE)
+    date = models.DateTimeField()

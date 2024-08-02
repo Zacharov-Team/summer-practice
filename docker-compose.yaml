@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  pgdb:
+    image: postgres:16.2
+    ports:
+      - "54320:5432"
+    env_file:
+      - web/back/.env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+    restart: unless-stopped
+
+  triton:
+    image: nvcr.io/nvidia/tritonserver:23.01-py3
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    ports:
+      - "8000:8000"  # HTTP endpoint
+      - "8001:8001"  # GRPC endpoint
+      - "8002:8002"  # Metrics endpoint
+    volumes:
+      - ./ML:/models
+    command: [
+      "tritonserver",
+      "--model-repository=/models"
+    ]
+
+volumes:
+  pg_data:

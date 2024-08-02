@@ -17,7 +17,7 @@ class Command(BaseCommand):
                 result = []
                 for item in values:
                     if item == "":
-                        result.append(0.0)
+                        continue
                     else:
                         result.append(float(item))
                 aggregated_data = AggregatedData(date=time, data_values=result)
@@ -36,10 +36,10 @@ class Command(BaseCommand):
                 result = []
                 for item in values:
                     if item == "":
-                        result.append(0)
+                        continue
                     else:
                         result.append(int(item))
-                modified_data = ModifiedData(data=result, aggregated_data_id=id)
+                modified_data = ModifiedData(data=result, date=time)
                 try:
                     modified_data.save()
                     id += 1
