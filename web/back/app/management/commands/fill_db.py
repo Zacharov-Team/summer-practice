@@ -39,7 +39,7 @@ class Command(BaseCommand):
                         continue
                     else:
                         result.append(int(item))
-                modified_data = ModifiedData(data=result, aggregated_data_id=id)
+                modified_data = ModifiedData(data=result, aggregated_data_id=id, date=time)
                 try:
                     modified_data.save()
                     id += 1
