@@ -23,6 +23,7 @@ keyring==24.2.0
 marshmallow==3.21.3
 more-itertools==10.1.0
 msgpack==1.0.7
+numpy==2.0.1
 packaging==23.2
 pexpect==4.9.0
 pip-autoremove==0.10.0
