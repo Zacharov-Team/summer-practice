@@ -3,10 +3,6 @@ info:
   title: TEAM
   version: "1.0"
   description: API документация для проекта
-  contact:
-    email: contact@yourapi.local
-  license:
-    name: BSD License
 servers:
   - url: http://195.133.201.153:8000
 paths:
