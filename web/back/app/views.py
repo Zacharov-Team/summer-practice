@@ -5,38 +5,39 @@ from django.core.exceptions import ValidationError
 from django.middleware.csrf import get_token
 from django.shortcuts import redirect
 from django.urls import reverse
+import json
 
 from app.models import *
 
 
 def log_in(request):
     if request.method == 'POST':
-        username = request.POST.get('username', '')
-        password = request.POST.get('password', '')
-        if not username or not password:
-            return JsonResponse({'error': 'Username and password are required'})
+        request_dict = json.loads(request.body)
+        email = request_dict['email']
+        password = request_dict['password']
+        print(email, password)
+        if not email or not password:
+            return JsonResponse({'status': 400, 'error': 'Email and password are required'})
         try:
-            user = authenticate(request, username=username, password=password)
+            user = authenticate(request, email=email, password=password)
+            print(user)
             if user is not None:
                 login(request, user)
                 return JsonResponse({
-                    'status': 'success',
-                    'message': 'Logged in successfully',
+                    'status': 200,
                     'username': user.username,
                     'name': user.first_name,
                     'last_name': user.last_name,
                     'email': user.email}
                 )
             else:
-                return JsonResponse({'status': 'error',
-                                     'message': 'Invalid username or password'})
+                return JsonResponse({'status': 400, 'message': 'Invalid email or password'})
         except ValidationError as e:
-            return JsonResponse({'status': 'error',
-                                 'message': e.message})
+            return JsonResponse({'status': 500, 'message': e.message})
 
     if request.method == 'GET':
         csrf_token = get_token(request)
-        return JsonResponse({'csrf_token': csrf_token})
+        return JsonResponse({'status': 200, 'csrf_token': csrf_token})
 
 
 import numpy as np
@@ -46,11 +47,10 @@ from PIL import Image
 import datetime
 from django.utils import timezone
 
-@login_required(login_url='login')
 def handle_model(request):
     file = request.FILES.get('img')
     if not file:
-        return JsonResponse({'status': 'error', 'message': 'No image uploaded'})
+        return JsonResponse({'status': 400, 'message': 'No image uploaded'})
     triton_client = grpcclient.InferenceServerClient(
         url="0.0.0.0:8001"
     )
@@ -72,44 +72,42 @@ def handle_model(request):
 
     md = ModifiedData.objects.create(data=out.tolist(), date=timezone.now())
     md.save()
-    res = {"result": out.tolist()}
+    res = {'status': 200, "result": out.tolist()}
 
-    return res
+    return JsonResponse(res)
 
 
 def log_out(request):
     logout(request)
-    return redirect(reverse('login'))
+    return JsonResponse({'status': 200})
 
 
-@login_required(login_url='login')
 def get_modified(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
     if not start_date or not end_date:
-        return JsonResponse({'error': 'start_date and end_date parameters are required.'}, status=400)
+        return JsonResponse({'status': 400, 'error': 'start_date and end_date parameters are required.'})
 
     try:
         modified_data = ModifiedData.objects.filter(date__range=[start_date, end_date])
         data_list = list(modified_data.values())
-        return JsonResponse(data_list, safe=False)
+        return JsonResponse({'status': 200, 'data': data_list}, safe=False)
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({'status': 500, 'error': str(e)}, status=500)
 
 
-@login_required(login_url='login')
 def get_aggregate(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
     if not start_date or not end_date:
-        return JsonResponse({'error': 'start_date and end_date parameters are required.'}, status=400)
+        return JsonResponse({'status': 400, 'error': 'start_date and end_date parameters are required.'})
 
     try:
         aggregated_data = AggregatedData.objects.filter(date__range=[start_date, end_date])
         data_list = list(aggregated_data.values())
 
-        return JsonResponse(data_list, safe=False)
+        return JsonResponse({'status': 200, 'data': data_list}, safe=False)
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({'status': 500, 'error': str(e)})
