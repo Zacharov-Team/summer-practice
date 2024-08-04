@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ToolLocation, Tool, AggregatedData, ModifiedData, CustomUser
+from .models import ToolLocation, Tool, AggregatedData, ModifiedData
 
 
 class AggregatedDataAdmin(admin.ModelAdmin):
@@ -20,12 +20,7 @@ class ToolAdmin(admin.ModelAdmin):
     search_fields = ('tool_name', 'location__location_name')
 
 
-class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'first_name', 'last_name', 'email', 'password')
 
-
-
-admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(AggregatedData, AggregatedDataAdmin)
 admin.site.register(ModifiedData, ModifiedDataAdmin)
 admin.site.register(ToolLocation, ToolLocationAdmin)

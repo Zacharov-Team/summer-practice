@@ -1,11 +1,11 @@
+import json
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.middleware.csrf import get_token
-from django.shortcuts import redirect
-from django.urls import reverse
-import json
+
 
 from app.models import *
 
@@ -47,10 +47,11 @@ from PIL import Image
 import datetime
 from django.utils import timezone
 
+@login_required(login_url='login')
 def handle_model(request):
     file = request.FILES.get('img')
     if not file:
-        return JsonResponse({'status': 400, 'message': 'No image uploaded'})
+        return JsonResponse({'status': 'error', 'message': 'No image uploaded'})
     triton_client = grpcclient.InferenceServerClient(
         url="0.0.0.0:8001"
     )
@@ -72,9 +73,9 @@ def handle_model(request):
 
     md = ModifiedData.objects.create(data=out.tolist(), date=timezone.now())
     md.save()
-    res = {'status': 200, "result": out.tolist()}
+    res = {"result": out.tolist()}
 
-    return JsonResponse(res)
+    return res
 
 
 def log_out(request):
@@ -82,6 +83,7 @@ def log_out(request):
     return JsonResponse({'status': 200})
 
 
+@login_required(login_url='login')
 def get_modified(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')

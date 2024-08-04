@@ -1,15 +1,16 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 
 # Create your models here.
 
-class CustomUser(User):
+class CustomUser(models.Model):
     role = models.CharField(max_length=50)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} ({self.username})"
+        return self.user.username
 
 
 class ToolLocation(models.Model):
