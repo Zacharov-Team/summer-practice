@@ -103,18 +103,6 @@ def get_modified(request):
         modified_data = ModifiedData.objects.filter(date__range=[start_date, end_date]).order_by('id')
         data_list = list(modified_data.values())
         
-        for data_item in data_list:
-            values = data_item['data_values']
-            min_value = 1
-            for value in values:
-                if min_value > value and value >= -1:
-                    min_value = value
-            data_item['min'] = min_value
-            data_item['max']= max(values)
-            data_item['first'] = values[0]
-            data_item['last'] = values[-1]
-            del data_item['data_values']
-        
         return JsonResponse({'status': 200, 'data': data_list}, safe=False)
     except Exception as e:
         return JsonResponse({'status': 500, 'error': str(e)}, status=500)
@@ -130,18 +118,21 @@ def get_aggregate(request):
     try:
         aggregated_data = AggregatedData.objects.filter(date__range=[start_date, end_date]).order_by('id')
         data_list = list(aggregated_data.values())
-        
-        for data_item in data_list:
-            values = data_item['data_values']
-            min_value = 1
-            for value in values:
-                if min_value > value and value >= -1:
-                    min_value = value
-            data_item['min'] = min_value
-            data_item['max']= max(values)
-            data_item['first'] = values[0]
-            data_item['last'] = values[-1]
-            del data_item['data_values']
+
+        return JsonResponse({'status': 200, 'data': data_list}, safe=False)
+    except Exception as e:
+        return JsonResponse({'status': 500, 'error': str(e)})
+
+def get_initial(request):
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    if not start_date or not end_date:
+        return JsonResponse({'status': 400, 'error': 'start_date and end_date parameters are required.'})
+
+    try:
+        initial_data = InitialData.objects.filter(date__range=[start_date, end_date]).order_by('id')
+        data_list = list(initial_data.values())
 
         return JsonResponse({'status': 200, 'data': data_list}, safe=False)
     except Exception as e:

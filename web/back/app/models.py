@@ -34,5 +34,11 @@ class AggregatedData(models.Model):
 
 class ModifiedData(models.Model):
     id = models.AutoField(primary_key=True)
-    data = ArrayField(models.IntegerField())
+    data = ArrayField(models.DecimalField(max_digits=20, decimal_places=15))
+    date = models.DateTimeField()
+
+
+class InitialData(models.Model):
+    id = models.AutoField(primary_key=True)
+    data = ArrayField(models.DecimalField(max_digits=20, decimal_places=15))
     date = models.DateTimeField()
