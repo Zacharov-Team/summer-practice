@@ -7,20 +7,30 @@ class User {
 
     constructor() {
         this.#online = false;
+        this.authService = new AuthService();
     }
 
-    update(email, password) {
-        const response = (new AuthService).enterIntoAccount(email, password);
+    async update(email, password) {
+        const response = await this.authService.enterIntoAccount(
+            email,
+            password
+        );
 
-        if (!response) {
-            return false;
+        switch (response.status) {
+            case 401:
+                return false;
+            case 200:
+                this.#email = response.user_data,email;
+                this.#fio = `${response.user_data.name} ${response.user_data.last_name}`;
+                this.#online = true;
+                return true;
         }
+    }
 
-        this.#email = response.email;
-        this.#fio = response.fio;
+    setInfo({email, name, last_name}) {
+        this.#email = email;
+        this.#fio = `${name} ${last_name}`;
         this.#online = true;
-
-        return true;
     }
 
     getFio() {
@@ -37,10 +47,10 @@ class User {
         }
 
         this.#online = false;
+        this.authService.exitFromAccount();
 
         return true;
     }
-
 }
 
 export default new User();

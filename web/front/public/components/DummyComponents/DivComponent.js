@@ -14,7 +14,7 @@ class DivComponent extends BaseComponent {
 
         super.update();
 
-        divComponent.innerHTML = '';
+        divComponent.innerHTML = "";
 
         this.innerComponents.forEach((innerComponent) => {
             divComponent.innerHTML += innerComponent.render();

@@ -49,17 +49,27 @@
 .calculating {
     display: flex;
     flex-direction: row;
-    background-color: #D9D9D9;
+    background-color: #d9d9d9;
     margin: 20px 0;
     border: 1px solid;
     border-radius: 6px;
     justify-content: space-between;
+    align-items: center;
+    margin: 20px 150px;
+    padding: 10px;
 
     &-variants {
         display: flex;
         flex-direction: column;
         padding: 0 20px;
     }
+}
+
+.left-side-radios {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 50px;
 }
 
 .string-variants {
@@ -69,29 +79,29 @@
 }
 
 .variant {
-
     &-div {
         background-color: #c1c1c2;
         border-radius: 8px;
         display: flex;
         flex-direction: column-reverse;
         margin: 0 10px;
-        padding: 6px 0 0;
+        padding: 9px 0 0;
         border: 1px solid;
+        text-align: center;
     }
 
     &__input {
-        background-color: #E2E3EB;
+        background-color: #e2e3eb;
         padding: 5px;
         border: 1px solid;
-        border-radius: 8px;
+        border-radius: 6px;
         margin-top: 5px;
+        width: 170px;
+        height: 25px;
     }
-    
 }
 
 .calculate {
-
     &-div {
         padding: 20px;
         display: flex;
@@ -100,12 +110,11 @@
     }
 
     &-button {
-        background-color: #C1C1C2;
+        background-color: #c1c1c2;
         border: none;
         border-radius: 11px;
         padding: 7px 12px;
     }
-    
 }
 
 .plot-example {

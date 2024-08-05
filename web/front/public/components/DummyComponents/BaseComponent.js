@@ -35,7 +35,7 @@ class BaseComponent {
     removeInnerComponent(attr, value) {
         this.innerComponents.forEach((comp, ind) => {
             if (comp.getAttr(attr) === value) {
-                this.innerComponents.splice(ind);
+                this.innerComponents.splice(ind, 1);
             }
         });
     }

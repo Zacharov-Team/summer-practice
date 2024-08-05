@@ -1,15 +1,14 @@
 "use strict";
 
 import Header from "./components/Header/header";
-import RawData from "./components/RawData/rawdata";
+import RawDataController from "./components/RawData/RawDataController";
 import "./reset.css";
 import "./index.scss";
 import NeuralNetworkProcessing from "./components/NeuralNetworkProcessing/NeuralNetworkProcessing";
-import SignIn from "./components/SignIn/SignIn";
+import SignInController from "./components/SignIn/SignInController";
 import Register from "./components/Register/Register";
 import EventBus from "./modules/EventBus";
-import DataProcessing from "./components/DataProcessing/DataProcessing";
-import User from "./modules/User";
+import DataProcessingController from "./components/DataProcessing/DataProcessingController";
 
 const eventBus = new EventBus([
     "clickedRenderSignInPage",
@@ -23,14 +22,19 @@ const eventBus = new EventBus([
     "clickedAddTag",
     "clickedEnterIntoAccount",
     "clickedCreateAnAccount",
+    "checkIsAuthenticated",
 ]);
 
 const header = new Header(eventBus);
-const rawData = new RawData(eventBus, 8);
-const dp = new DataProcessing(eventBus);
+const rawData = new RawDataController(eventBus);
+const dp = new DataProcessingController(eventBus);
 const nnp = new NeuralNetworkProcessing(eventBus, 8);
-const signIn = new SignIn(eventBus);
+const signIn = new SignInController(eventBus);
 const register = new Register(eventBus);
 
+if (await signIn.checkIsAuthenticated()) {
+    header.enteredIntoAccount();
+}
+
 header.render();
-rawData.render();
+rawData.renderRawDataView();

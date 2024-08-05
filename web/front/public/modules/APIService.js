@@ -1,78 +1,77 @@
-export class AuthService {
-    baseUrl = '/auth/';
+import { API_URL } from "./consts";
 
-    async enterIntoAccount(email, password) {
-        /*
-        const response = await fetch(this.baseUrl, {
-            method: 'POST',
-            credentials: 'include',
-            body: JSON.stringify({email, password}),
+export class AuthService {
+    baseUrl = `${API_URL}`;
+
+    async enterIntoAccount(username, password) {
+        const response = await fetch(this.baseUrl + "login/", {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify({ username, password }),
         });
 
         const data = await response.json();
 
-        console.log(data.entered);*/
-
-        if (email === 'alex@gmail.com' && password === 'zakharovteam') {
-            return {
-                fio: 'Горбунов Алексей Сергеевич',
-                email: email,
-            };
-        }
-
-        return null;
+        return data;
     }
 
-    async createAnAccount(name, email, password) {
-        const response = await fetch(this.baseUrl, {
-            method: 'POST',
-            credentials: 'include',
-            body: JSON.stringify({email, password, name}),
+    async isAuthenticated() {
+        const response = await fetch(this.baseUrl + "login/", {
+            method: "GET",
+            credentials: "include",
         });
 
         const data = await response.json();
 
-        console.log(data.created);
-
-        return true;
+        return data;
     }
 
     async exitFromAccount() {
-        const response = await fetch(this.baseUrl, {
-            method: 'POST',
-            credentials: 'include',
+        const response = await fetch(this.baseUrl + "logout/", {
+            method: "POST",
+            credentials: "include",
         });
 
-        console.log(response);
+        const data = await response.json();
 
-        return true;
+        return data;
     }
 }
 
 export class RawDataService {
+    baseUrl = `${API_URL}`;
 
-}
-
-export class DPService {
-    baseUrl = '/auth/';
-
-    async getDataProcessing(startTime, endTime) {
-        /*const response = await fetch(this.baseUrl + `?startTime=${startTime}&endTime=${endTime}`, {
-            method: 'GET',
-            credentials: 'include',
-        });
+    async getRawData(startTime, endTime) {
+        const response = await fetch(
+            this.baseUrl +
+                `get_initial/?start_date=${startTime}&end_date=${endTime}`,
+            {
+                method: "GET",
+                credentials: "include",
+            }
+        );
 
         const data = await response.json();
 
-        console.log(data.got);*/
-
-        const tagNames = [];
-        
-        for (let i = 0; i < 100; ++i ) {
-            tagNames.push(i);
-        }
-
-        return tagNames;
+        return data;
     }
+}
 
+export class DPService {
+    baseUrl = `${API_URL}`;
+
+    async getDataProcessing(startTime, endTime) {
+        const response = await fetch(
+            this.baseUrl +
+                `get_aggregate/?start_date=${startTime}&end_date=${endTime}`,
+            {
+                method: "GET",
+                credentials: "include",
+            }
+        );
+
+        const data = await response.json();
+
+        return data;
+    }
 }

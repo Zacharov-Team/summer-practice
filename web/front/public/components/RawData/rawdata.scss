@@ -1,5 +1,6 @@
 .raw-data {
     display: flex;
+    flex-direction: column;
     margin: 20px;
     justify-content: start;
 }
@@ -17,4 +18,70 @@
     background-color: #d9d9d9;
     border-radius: 7px;
     margin: 5px;
+}
+
+.radio-zone {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding: 10px;
+    flex-grow: 1;
+    max-width: 170px;
+    margin-left: 50px;
+}
+
+.radio-layout {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 8px;
+}
+
+.period-date {
+    &__radio-button {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+    }
+}
+
+.plot-div {
+    display: flex;
+    justify-content: center;
+}
+
+.yaxis-types {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.plot-type {
+    &__radio-button {
+        border-radius: 50%;
+        height: 24px;
+        width: 24px;
+    }
+}
+
+.linear-plot-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: #9b6868;
+
+    &__types-button {
+        border-radius: 50%;
+        height: 24px;
+        width: 24px;
+    }
+}
+
+.dp-tags {
+    margin: 20px 150px;
 }

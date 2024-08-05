@@ -42,3 +42,23 @@
     background-color: black;
     color: white;
 }
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    color: white;
+
+    &__exit-button {
+        background-color: black;
+        color: white;
+        border: none;
+        border-radius: 16px;
+        padding: 5px 10px;
+        margin-left: 10px;
+    }
+
+    &__user-fio {
+        font-weight: bold;
+    }
+}

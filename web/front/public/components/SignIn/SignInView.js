@@ -2,17 +2,19 @@ import "./SignIn.scss";
 import DivComponent from "../DummyComponents/DivComponent";
 import HasInnerTextComponent from "../DummyComponents/HasInnerTextComponent";
 import NoneInnerTextComponent from "../DummyComponents/NoneInnerTextComponent";
-import {validateEmail} from '../../modules/validators';
 
-class SignIn {
-    #eventBus;
+class SignInView {
+    #mainEventBus;
+    #localEventBus;
 
-    constructor(eventBus) {
-        this.#eventBus = eventBus;
+    constructor(mainEventBus, localEventBus) {
+        this.#mainEventBus = mainEventBus;
+        this.#localEventBus = localEventBus;
 
-        this.#eventBus.addEventListener("clickedRenderSignInPage", () => {
-            this.render();
-        });
+        this.#mainEventBus.addEventListener(
+            "clickedRenderSignInPage",
+            this.render.bind(this)
+        );
     }
 
     render() {
@@ -34,10 +36,27 @@ class SignIn {
             "input",
             {
                 id: "mail-input",
-                placeholder: "Почта",
-                type: "email",
+                placeholder: "Имя",
+                type: "text",
             },
             ["sign-in-form__input"]
+        );
+
+        const passInput = new NoneInnerTextComponent(
+            "input",
+            {
+                id: "password-input",
+                placeholder: "Пароль",
+                type: "password",
+            },
+            ["sign-in-form__input"]
+        );
+
+        const signInButton = new HasInnerTextComponent(
+            "button",
+            { id: "sign-in-form-button" },
+            ["sign-in-form__button"],
+            "Войти"
         );
 
         const signInDiv = document.createElement("div");
@@ -46,21 +65,8 @@ class SignIn {
         signInDiv.innerHTML =
             new DivComponent({ id: "sign-in-form" }, ["sign-in-form"], "", [
                 mailInput,
-                new NoneInnerTextComponent(
-                    "input",
-                    {
-                        id: "password-input",
-                        placeholder: "Пароль",
-                        type: "password",
-                    },
-                    ["sign-in-form__input"]
-                ),
-                new HasInnerTextComponent(
-                    "button",
-                    { id: "sign-in-form-button" },
-                    ["sign-in-form__button"],
-                    "Войти"
-                ),
+                passInput,
+                signInButton,
             ]).render() +
             new DivComponent({}, ["sign-in-go-to-register"], "", [
                 divRegister,
@@ -68,28 +74,21 @@ class SignIn {
 
         document.body.appendChild(signInDiv);
 
-        divRegister.addListeners([
+        const usernameInput = document.getElementById(mailInput.getAttr("id"));
+        const passwordInput = document.getElementById(passInput.getAttr("id"));
+
+        signInButton.addListeners([
             {
                 event: "click",
                 func: () => {
-                    this.#eventBus.emit("clickedRenderRegisterPage");
+                    this.#localEventBus.emit("tryToSignIn", {
+                        username: usernameInput.value,
+                        password: passwordInput.value,
+                    });
                 },
             },
-        ]);
-
-        const emailInput = document.getElementById(mailInput.getAttr('id'));
-
-        mailInput.addListeners([
-            {
-                event: 'focusout',
-                func: () => {
-                    if (!validateEmail(emailInput.value)) {
-                        alert('mda');
-                    }
-                },
-            }
         ]);
     }
 }
 
-export default SignIn;
+export default SignInView;

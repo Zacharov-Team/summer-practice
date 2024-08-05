@@ -1,5 +1,5 @@
 export function validateFIO(fio) {
-    return fio !== '';
+    return fio !== "";
 }
 
 export function matchPasswords(password, repeatPassword) {
@@ -7,5 +7,5 @@ export function matchPasswords(password, repeatPassword) {
 }
 
 export function validateEmail(email) {
-    return email.includes('@');
+    return email.includes("@");
 }
