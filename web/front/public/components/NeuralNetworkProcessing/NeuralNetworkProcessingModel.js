@@ -26,6 +26,9 @@ class NeuralNetworkProcessingModel {
             case 200:
                 this.#localEventBus.emit("receivedHeatMap", response.data);
                 break;
+            case 401:
+                this.#mainEventBus.emit('clickedRenderSignInPage');
+                break;
         }
     }
 
@@ -38,6 +41,9 @@ class NeuralNetworkProcessingModel {
         switch (response.status) {
             case 200:
                 this.#localEventBus.emit("receivedInitialPlot", response.data);
+                break;
+            case 401:
+                this.#mainEventBus.emit('clickedRenderSignInPage');
                 break;
         }
     }

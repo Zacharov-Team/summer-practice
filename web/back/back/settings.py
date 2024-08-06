@@ -50,9 +50,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'back.urls'
 
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000',
-# ]
+CORS_ALLOWED_ORIGINS = [
+     'http://localhost:3000',
+     'http://195.133.201.153:3000',
+]
 
 CORS_ALLOW_METHODS = [
     'GET',

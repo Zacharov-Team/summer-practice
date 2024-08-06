@@ -25,6 +25,9 @@ class DataProcessingModel {
             case 200:
                 this.#localEventBus.emit("receivedPlot", response.data);
                 break;
+            case 401:
+                this.#mainEventBus.emit('clickedRenderSignInPage');
+                break;
         }
     }
 }
