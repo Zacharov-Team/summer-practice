@@ -8,8 +8,7 @@
     "build": "webpack",
     "start": "node ./server/index.js",
     "lint": "npx prettier --write ./public && npx eslint ./public",
-    "precommit": "lint-staged",
-    "prepare": "husky"
+    "precommit": "lint-staged"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +19,7 @@
     "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.0",
+    "husky": "^8.0.3",
     "image-minimizer-webpack-plugin": "^4.0.2",
     "mini-css-extract-plugin": "^2.9.0",
     "sass": "^1.77.8",
