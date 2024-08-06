@@ -8,8 +8,7 @@
     "build": "webpack",
     "start": "node ./server/index.js",
     "lint": "npx prettier --write ./public && npx eslint ./public",
-    "precommit": "lint-staged",
-    "prepare": "husky"
+    "precommit": "lint-staged"
   },
   "author": "",
   "license": "ISC",
