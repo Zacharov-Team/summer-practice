@@ -12,7 +12,7 @@ class Command(BaseCommand):
     help = 'Тестирование ручки тритона'
 
     def add_arguments(self, parser):
-        parser.add_argument('type', type=int, help='тип тестирования\n'
+        parser.add_argument('type', type=str, help='тип тестирования\n'
                                                    '\trandom - генерация тензора\n'
                                                    '\tpic - берем файл из тестовых данных\n')
 
