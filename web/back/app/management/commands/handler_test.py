@@ -1,4 +1,4 @@
-from tkinter import Image
+from PIL import Image
 
 from app.models import *
 import numpy as np
@@ -27,6 +27,7 @@ class Command(BaseCommand):
         elif options['type'] == 'pic':
             filepath = os.path.join(BASE_DIR, "uploads_dataset", "df_diff2.csv")
             img = Image.open(filepath)
+            input_data = np.array(img.data, dtype=np.float32)
 
 
         else:
