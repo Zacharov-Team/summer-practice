@@ -63,7 +63,8 @@ def handle_model(request):
         return JsonResponse({'status': 405})
     
     return JsonResponse({'status': 200})
-    
+
+
     #ownFile = request.FILES.get('img')
     #if not ownFile:
         #return JsonResponse({'status': 400, 'message': 'No image uploaded'})
@@ -139,6 +140,7 @@ def get_aggregate(request):
         return JsonResponse({'status': 200, 'data': data_list}, safe=False)
     except Exception as e:
         return JsonResponse({'status': 500, 'error': str(e)})
+
 
 def get_initial(request):
     start_date = request.GET.get('start_date')
