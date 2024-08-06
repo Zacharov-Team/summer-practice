@@ -31,14 +31,14 @@ pip freeze > requirements.txt
 pip install -r requirements.txt
 ```
 
-### Создание django проекта
-Установка
 ```bash
-pip3 install django 
+pip install tritonclient[all]
+```
+```bash
+pip install numpy
 ```
 
 ```bash
-django-admin startproject <PROJ_NAME>
+pip install torch
 ```
-
  
