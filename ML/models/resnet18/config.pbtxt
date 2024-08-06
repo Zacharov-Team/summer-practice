@@ -1,6 +1,6 @@
 name: "resnet18"
 platform: "onnxruntime_onnx"
-max_batch_size: 32
+max_batch_size: 48
 input [
     {
         name: "keras_tensor"

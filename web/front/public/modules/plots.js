@@ -5,11 +5,11 @@ import { MARKERS_OCHL, TOOLS_COUNT } from './consts.js';
 export function makeLinearPlot(plotData, traces) {
     let flag = true;
 
-    if (!document.getElementById('plot-div')) {
+    if (!document.getElementById('initial-plot-div')) {
         const plotDiv = document.createElement('div');
     
-        plotDiv.setAttribute('id', 'plot-div');
-        plotDiv.classList.add('plot-div');
+        plotDiv.setAttribute('id', 'initial-plot-div');
+        plotDiv.classList.add('initial-plot-div');
 
         document.body.appendChild(plotDiv);
 
@@ -66,18 +66,9 @@ export function makeLinearPlot(plotData, traces) {
         }
     });
 
-    for (let i = TOOLS_COUNT - 1; i >= 0; i--) {
-        if (!traces.includes(i)) {
-            yMarker.first.splice(i, 1);
-            yMarker.last.splice(i, 1);
-            yMarker.maxes.splice(i, 1);
-            yMarker.mins.splice(i, 1);
-        }
-    }
-
     document.querySelectorAll('.linear-plot-marker__types-button').forEach((button) => {
         button.addEventListener('click', () => {
-            renderLinearPlot(yMarker.hours, yMarker[button.value], flag);
+            renderLinearPlot(yMarker.hours, yMarker[button.value], flag, traces);
             flag = true;
         });
     });
@@ -85,26 +76,28 @@ export function makeLinearPlot(plotData, traces) {
     document.getElementById('first-marker-button').click();
 }
 
-function renderLinearPlot(xaxis, yaxis, flag) {
+function renderLinearPlot(xaxis, yaxis, flag, traces) {
 
     let data = [];
 
     yaxis.forEach((y, index) => {
-        data.push({
-            x: xaxis,
-            y: y,
-            type: 'scatter',
-            name: `Tool ${index + 1}`,
-            marker: {
-                size: 5,
-            },
-            transforms: [{
-                type: 'filter',
-                target: 'y',
-                operation: '>',
-                value: -1000
-            }],
-        })
+        if (traces.includes(index)) {
+            data.push({
+                x: xaxis,
+                y: y,
+                type: 'scatter',
+                name: `Tool ${index + 1}`,
+                marker: {
+                    size: 5,
+                },
+                transforms: [{
+                    type: 'filter',
+                    target: 'y',
+                    operation: '>',
+                    value: -1000
+                }],
+            })
+        }        
     });
 
     let layout = {
@@ -116,22 +109,22 @@ function renderLinearPlot(xaxis, yaxis, flag) {
         margin: {
             pad: 4
         },
-        title: 'Aggregated data',
+        title: 'Initial data',
     };
 
     if (flag) {
-        Plotly.react('plot-div', data, layout);
+        Plotly.react('initial-plot-div', data, layout);
     } else {
-        Plotly.newPlot('plot-div', data, layout);
+        Plotly.newPlot('initial-plot-div', data, layout);
     }
 }
 
-export function makeCandlePlot(plotData) {
-    if (!document.getElementById('plot-div')) {
+export function makeCandlePlot(plotData, traces) {
+    if (!document.getElementById('initial-plot-div')) {
         const plotDiv = document.createElement('div');
     
-        plotDiv.setAttribute('id', 'plot-div');
-        plotDiv.classList.add('plot-div');
+        plotDiv.setAttribute('id', 'initial-plot-div');
+        plotDiv.classList.add('initial-plot-div');
 
         document.body.appendChild(plotDiv);
     }
@@ -166,6 +159,10 @@ export function makeCandlePlot(plotData) {
     let data = [];
 
     for (let i = 0; i < TOOLS_COUNT; i++) {
+        if (!traces.includes(i)) {
+            continue;
+        }
+
         data.push(
             {
                 x: hours, 
@@ -191,7 +188,7 @@ export function makeCandlePlot(plotData) {
         margin: {
             pad: 4
         },
-        title: 'Aggregated data',
+        title: 'Initial data',
         xaxis: {
           title: 'Date', 
           type: 'date'
@@ -202,16 +199,16 @@ export function makeCandlePlot(plotData) {
         }
       };
       
-      Plotly.newPlot('plot-div', data, layout);
+      Plotly.newPlot('initial-plot-div', data, layout);
 }
 
-export function makeHeatPlot(plotData) {
+export function makeHeatPlot(plotData, perTool = 4, markersTypes = MARKERS_OCHL, dataName = 'data_values') {
 
-    if (!document.getElementById('plot-div')) {
+    if (!document.getElementById('heatmap-plot-div')) {
         const plotDiv = document.createElement('div');
     
-        plotDiv.setAttribute('id', 'plot-div');
-        plotDiv.classList.add('plot-div');
+        plotDiv.setAttribute('id', 'heatmap-plot-div');
+        plotDiv.classList.add('heatmap-plot-div');
 
         document.body.appendChild(plotDiv);
     }
@@ -220,16 +217,16 @@ export function makeHeatPlot(plotData) {
     let tools = [];
     let strings = [];
 
-    plotData.forEach((hourData, index) => {
+    plotData.forEach((hourData) => {
         hours.push(hourData.date);
     });
 
-    for (let i = 0; i < TOOLS_COUNT * 4; i++) {
+    for (let i = 0; i < TOOLS_COUNT * perTool; i++) {
         let zArray = [];
-        tools.push(`T. ${Math.floor(i / 4) + 1}: ${MARKERS_OCHL[i % 4]}`);
+        tools.push(`T. ${Math.floor(i / perTool) + 1}: ${markersTypes[i % perTool]}`);
 
         plotData.forEach((hourData) => {
-            let value = hourData.data_values[i];
+            let value = hourData[dataName][i];
 
             if (value < -1) {
                 value = null;
@@ -263,5 +260,5 @@ export function makeHeatPlot(plotData) {
         autosize: false
     };
       
-    Plotly.newPlot('plot-div', data, layout);
+    Plotly.newPlot('heatmap-plot-div', data, layout);
 }

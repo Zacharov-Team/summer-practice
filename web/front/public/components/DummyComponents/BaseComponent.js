@@ -123,7 +123,6 @@ class BaseComponent {
     }
 
     render() {
-        console.log("Parent's render");
     }
 
     addListeners(events) {

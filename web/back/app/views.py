@@ -1,12 +1,13 @@
 import json
-
+import os
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from operator import itemgetter
+from back.settings import BASE_DIR
+
 
 from app.models import *
 
@@ -58,33 +59,49 @@ import datetime
 from django.utils import timezone
 
 def handle_model(request):
-    file = request.FILES.get('img')
-    if not file:
-        return JsonResponse({'status': '400', 'message': 'No image uploaded'})
-    triton_client = grpcclient.InferenceServerClient(
-        url="0.0.0.0:8001"
-    )
+    if request.method == 'GET':
+        return JsonResponse({'status': 405})
+    
+    return JsonResponse({'status': 200})
+    
+    #ownFile = request.FILES.get('img')
+    #if not ownFile:
+        #return JsonResponse({'status': 400, 'message': 'No image uploaded'})
+    
+    
+    #triton_client = grpcclient.InferenceServerClient(
+        #url="0.0.0.0:8001"
+    #)
 
-    img = Image.open(file)
-    input_data = img.cpu().numpy().astype(np.float32)
-    input_data = input_data.reshape([-1] + list(input_data.shape))
-    inputs = [grpcclient.InferInput("keras_tensor", input_data.shape, "FP32")]
-    inputs[0].set_data_from_numpy(input_data)
-    outputs = [
-        grpcclient.InferRequestedOutput("output_0"),
-    ]
+    #try:
+        #img = (torch.rand(128, 336, 1)*255)
 
-    result = triton_client.infer(
-        model_name="resnet18", inputs=inputs, outputs=outputs
-    )
-    out = result.as_numpy()
-    print(out)
+        #input_data = np.array(img.data, dtype=np.float32)
 
-    md = ModifiedData.objects.create(data=out.tolist(), date=timezone.now())
-    md.save()
-    res = {"result": out.tolist()}
+        #input_data = input_data.reshape([-1] + list(input_data.shape))
 
-    return res
+        #img = Image.open(os.path.join(BASE_DIR, "uploads_dataset", 'o1.png'))
+        #input_data = np.array(img, dtype=np.float32)
+
+        #input_data = input_data.reshape(list(input_data.shape))
+
+        #inputs = [grpcclient.InferInput("keras_tensor", input_data.shape, "FP32")]
+
+        #inputs[0].set_data_from_numpy(input_data)
+
+        #outputs = [
+            #grpcclient.InferRequestedOutput("output_0"),
+        #]
+        #result = triton_client.infer(
+            #model_name="resnet18", inputs=inputs, outputs=outputs
+        #)
+        
+        #out = result.as_numpy('output_0')
+    #except Exception as e:
+        #print(e)
+        #return JsonResponse({})
+        
+    #return JsonResponse({'status': 200, 'data': out[0].tolist()})
 
 
 def log_out(request):

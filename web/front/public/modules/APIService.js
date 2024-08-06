@@ -75,3 +75,37 @@ export class DPService {
         return data;
     }
 }
+
+export class NNPService {
+    baseUrl = `${API_URL}`;
+
+    async getHeatMap(startTime, endTime) {
+        const response = await fetch(
+            this.baseUrl +
+                `get_modified/?start_date=${startTime}&end_date=${endTime}`,
+            {
+                method: "GET",
+                credentials: "include",
+            }
+        );
+
+        const data = await response.json();
+
+        return data;
+    }
+
+    async getInitialPlot(startTime, endTime) {
+        const response = await fetch(
+            this.baseUrl +
+                `get_initial/?start_date=${startTime}&end_date=${endTime}`,
+            {
+                method: "GET",
+                credentials: "include",
+            }
+        );
+
+        const data = await response.json();
+
+        return data;
+    }
+}

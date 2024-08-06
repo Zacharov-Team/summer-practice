@@ -47,9 +47,10 @@
     }
 }
 
-.plot-div {
+.initial-plot-div, .heatmap-plot-div {
     display: flex;
     justify-content: center;
+    padding: 50px;
 }
 
 .yaxis-types {

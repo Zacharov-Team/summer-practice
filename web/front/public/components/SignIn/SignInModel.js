@@ -39,7 +39,6 @@ class SignInModel {
             this.#mainEventBus.emit("enteredIntoAccount");
             this.#mainEventBus.emit("clickedRenderRawDataPage");
         } else {
-            console.log("incorrect password");
         }
     }
 }

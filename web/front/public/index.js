@@ -4,7 +4,7 @@ import Header from "./components/Header/header";
 import RawDataController from "./components/RawData/RawDataController";
 import "./reset.css";
 import "./index.scss";
-import NeuralNetworkProcessing from "./components/NeuralNetworkProcessing/NeuralNetworkProcessing";
+import NeuralNetworkProcessingController from "./components/NeuralNetworkProcessing/NeuralNetworkProcessingController";
 import SignInController from "./components/SignIn/SignInController";
 import Register from "./components/Register/Register";
 import EventBus from "./modules/EventBus";
@@ -28,9 +28,8 @@ const eventBus = new EventBus([
 const header = new Header(eventBus);
 const rawData = new RawDataController(eventBus);
 const dp = new DataProcessingController(eventBus);
-const nnp = new NeuralNetworkProcessing(eventBus, 8);
+const nnp = new NeuralNetworkProcessingController(eventBus);
 const signIn = new SignInController(eventBus);
-const register = new Register(eventBus);
 
 if (await signIn.checkIsAuthenticated()) {
     header.enteredIntoAccount();

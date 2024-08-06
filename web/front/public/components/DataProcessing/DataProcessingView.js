@@ -1,4 +1,3 @@
-import "./DataProcessing.scss";
 import DivComponent from "../DummyComponents/DivComponent";
 import NoneInnerTextComponent from "../DummyComponents/NoneInnerTextComponent";
 import HasInnerTextComponent from "../DummyComponents/HasInnerTextComponent";
@@ -31,13 +30,13 @@ class DataProcessingView {
             document.body.removeChild(document.body.lastChild);
         }
 
-        const tools = [];
+        /*const tools = [];
 
         for (let i = 0; i < this.#toolsCount; i++) {
             tools.push(new DivComponent({id: `tool-${i}`, value: i}, ['tag'], `Tool ${i}`));
         }
 
-        const resultTags = new DivComponent({ id: "result-tags" }, ["result-tags"]);
+        const resultTags = new DivComponent({ id: "result-tags" }, ["result-tags"]);*/
 
         const calcButton = new HasInnerTextComponent(
             "button",
@@ -95,7 +94,7 @@ class DataProcessingView {
         const endInput = document.getElementById(endDate.getAttr('id'));
         endInput.valueAsDate = new Date('2021-01-08');
 
-        tools.forEach((tool) => {
+        /*tools.forEach((tool) => {
             tool.addListeners([{
                 event: 'click',
                 func: () => {
@@ -113,7 +112,7 @@ class DataProcessingView {
                     tool.update();
                 },
             }]);
-        });
+        });*/
 
         calcButton.addListeners([{
             event: 'click',
@@ -121,7 +120,6 @@ class DataProcessingView {
                 const startDate = new Date(endInput.value);
 
                 startDate.setDate(startDate.getDate() - DAY_DURATION_HEAT_MAP);
-                console.log(endInput.value, startDate)
                 this.#localEventBus.emit('needPlot', {startDate: `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`, endDate: endInput.value});
             },
         }])

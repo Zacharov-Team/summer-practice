@@ -1,44 +1,40 @@
+import "./NeuralNetworkProcessing.scss";
 import DivComponent from "../DummyComponents/DivComponent";
-import HasInnerTextComponent from "../DummyComponents/HasInnerTextComponent";
 import NoneInnerTextComponent from "../DummyComponents/NoneInnerTextComponent";
-import "./rawdata.scss";
-import {makeCandlePlot, makeLinearPlot } from "../../modules/plots";
-import { TOOLS_COUNT } from "../../modules/consts";
+import HasInnerTextComponent from "../DummyComponents/HasInnerTextComponent";
+import { MARKERS_OC, TOOLS_COUNT } from "../../modules/consts";
+import { makeCandlePlot, makeHeatPlot, makeLinearPlot } from "../../modules/plots";
 
-class RawDataView {
+class NeuralNetworkProcessingView {
     #mainEventBus;
     #localEventBus;
+    #daysDuration = 7;
     #typeOfPlot = 'linear';
-    #plotData = null;
-    #toolsCount = TOOLS_COUNT;
+    #heatmapPlotData = null;
+    #initialPlotData = null;
     #traces = [];
 
     constructor(mainEventBus, localEventBus) {
         this.#mainEventBus = mainEventBus;
         this.#localEventBus = localEventBus;
 
-        this.#mainEventBus.addEventListener("clickedRenderRawDataPage", this.render.bind(this));
-        this.#localEventBus.addEventListener('receivedPlot', this.updatePlot.bind(this));
+        for (let i = 0; i < TOOLS_COUNT; i++) {
+            this.#traces.push(i);
+        }
+
+        this.#mainEventBus.addEventListener("clickedRenderNNPPage", this.render.bind(this));
+        this.#localEventBus.addEventListener('receivedHeatMap', this.updateHeatMap.bind(this));
+        this.#localEventBus.addEventListener('receivedInitialPlot', this.updateInitialPlot.bind(this));
     }
 
     render() {
-        if (document.getElementById("raw-data")) {
+        if (document.getElementById('nnp')) {
             return;
         }
-
-        this.#traces = [];
 
         while (document.body.childNodes.length > 1) {
             document.body.removeChild(document.body.lastChild);
         }
-
-        const tools = [];
-
-        for (let i = 0; i < this.#toolsCount; i++) {
-            tools.push(new DivComponent({id: `tool-${i}`, value: i}, ['tag'], `Tool ${i + 1}`));
-        }
-
-        const resultTags = new DivComponent({ id: "result-tags" }, ["result-tags"]);
 
         const calcButton = new HasInnerTextComponent(
             "button",
@@ -47,11 +43,11 @@ class RawDataView {
             "Вычислить"
         );
 
-        const startDate = new NoneInnerTextComponent(
+        /*const startDate = new NoneInnerTextComponent(
             "input",
             { type: "date", id: 'start-date-input' },
             ["variant__input"]
-        );
+        );*/
 
         const endDate = new NoneInnerTextComponent(
             "input",
@@ -63,14 +59,14 @@ class RawDataView {
         const sevenDayButton = new HasInnerTextComponent('input', {checked: true, name: 'days', value: 7, type: 'radio', id: 'seven-day-radio'}, ['period-date__radio-button']);
         const fourteenDayButton = new HasInnerTextComponent('input', {name: 'days', value: 14, type: 'radio', id: 'fourteen-day-radio'}, ['period-date__radio-button']);
         const thirtyDayButton = new HasInnerTextComponent('input', {name: 'days', value: 30, type: 'radio', id: 'thirty-day-radio'}, ['period-date__radio-button']);
-        const otherDayButton = new HasInnerTextComponent('input', {name: 'days', value: 'other-day', type: 'radio', id: 'other-day-radio'}, ['period-date__radio-button']);
+        //const otherDayButton = new HasInnerTextComponent('input', {name: 'days', value: 'other-day', type: 'radio', id: 'other-day-radio'}, ['period-date__radio-button']);
 
         const linearPlotButton = new HasInnerTextComponent('input', {checked: true, name: 'type-of-plot', value: 'linear', type: 'radio', id: 'one-day-radio'}, ['plot-type__radio-button']);
         const candlesPlotButton = new HasInnerTextComponent('input', {name: 'type-of-plot', value: 'candles', type: 'radio', id: 'one-day-radio'}, ['plot-type__radio-button']);
 
         const dpDiv = document.createElement("div");
-        dpDiv.setAttribute("id", "raw-data");
-        dpDiv.classList.add("raw-data");
+        dpDiv.setAttribute("id", "nnp");
+        dpDiv.classList.add("nnp");
         (dpDiv.innerHTML = (new DivComponent({ id: "calculating" }, ["calculating"], "", [
                 new DivComponent({}, ['left-side-radios'], '', [
                     new DivComponent({id: 'radio-zone'}, ['radio-zone'], '', [
@@ -86,9 +82,9 @@ class RawDataView {
                         new DivComponent({}, ['radio-layout'], '30 day', [
                             thirtyDayButton,
                         ]),
-                        new DivComponent({}, ['radio-layout'], 'Другое', [
+                        /*new DivComponent({}, ['radio-layout'], 'Другое', [
                             otherDayButton,
-                        ])
+                        ])*/
                     ]),
                     new DivComponent(
                         { id: "calculating-variants" },
@@ -100,14 +96,14 @@ class RawDataView {
                                 ["string-variants"],
                                 "",
                                 [
-                                    new DivComponent(
+                                    /*new DivComponent(
                                         { id: "date-variant" },
                                         ["variant-div"],
                                         "Начальная дата",
                                         [
                                             startDate,
                                         ]
-                                    ),
+                                    ),*/
                                     new DivComponent(
                                         { id: "period-variant" },
                                         ["variant-div"],
@@ -142,30 +138,27 @@ class RawDataView {
                     { id: "tags-field" },
                     ["tags-field"],
                     "",
-                    tools,
                 ),
-                resultTags,
             ]).render());
 
         document.body.appendChild(dpDiv);
-        document.getElementById('seven-day-radio').checked = true;
 
-        const startInput = document.getElementById(startDate.getAttr('id'));
+        //const startInput = document.getElementById(startDate.getAttr('id'));
         const endInput = document.getElementById(endDate.getAttr('id'));
 
         endInput.valueAsDate = new Date('2021-01-08');
-        startInput.valueAsDate = new Date('2021-01-01');
+        //startInput.valueAsDate = new Date('2021-01-01');
 
-        startInput.addEventListener('click', () => {
+        /*startInput.addEventListener('click', () => {
             document.getElementById(otherDayButton.getAttr('id')).setAttribute('checked', true);
-        });
+        });*/
 
-        endInput.addEventListener('click', () => {
+        /*endInput.addEventListener('click', () => {
             document.getElementById(otherDayButton.getAttr('id')).setAttribute('checked', true);
-        });
+        });*/
 
         document.querySelectorAll('.period-date__radio-button').forEach((button) => {
-            if (button.id !== 'other-day-radio') {
+            /*if (button.id !== 'other-day-radio') {
                 button.addEventListener('click', () => {
                         const diff = +button.value;
                         const endDate = new Date(endInput.value);
@@ -174,7 +167,10 @@ class RawDataView {
                         startInput.valueAsDate = endDate;
                     },
                 );
-            }
+            }*/
+            button.addEventListener('click', () => {
+                this.#daysDuration = button.value;
+            });
         });
 
         document.querySelectorAll('.plot-type__radio-button').forEach((button) => {
@@ -182,59 +178,43 @@ class RawDataView {
                 this.#typeOfPlot = button.value;
 
                 if (document.getElementById('initial-plot-div')) {
-                    this.updatePlot(this.#plotData);
+                    this.updateInitialPlot(this.#initialPlotData);
                 }
             });
-        });
-
-        tools.forEach((tool) => {
-            tool.addListeners([{
-                event: 'click',
-                func: () => {
-                    const toolId = tool.getAttr('id');
-
-                    if (!tool.hasClass('tag_chosen')) {
-                        resultTags.addInnerComponent(new DivComponent({ id: `${toolId}-chosen` }, ['tag', "tag_chosen"], tool.getText()));
-                        resultTags.update();
-                        this.#traces.push(tool.getAttr('value'));
-                        if (this.#plotData) {
-                            this.updatePlot(this.#plotData);
-                        }
-                    } else {
-                        resultTags.removeInnerComponent('id', `${toolId}-chosen`);
-                        this.#traces.splice(this.#traces.indexOf(tool.getAttr('value')), 1);
-                        document.getElementById(`${toolId}-chosen`)?.remove();
-                        if (this.#plotData) {
-                            this.updatePlot(this.#plotData);
-                        }
-                    }
-
-                    tool.toggleClass('tag_chosen');
-                    tool.update();
-                },
-            }]);
         });
 
         calcButton.addListeners([{
             event: 'click',
             func: () => {
-                this.#localEventBus.emit('needPlot', {startDate: startInput.value, endDate: endInput.value});
+                const startInputValue = new Date(endInput.value);
+                startInputValue.setDate(startInputValue.getDate() - this.#daysDuration);
+
+                const startDate = `${startInputValue.getFullYear()}-${startInputValue.getMonth() + 1}-${startInputValue.getDate()}`;
+
+                this.#localEventBus.emit('needHeatMap', {startDate, endDate: endInput.value});
+                this.#localEventBus.emit('needInitialPlot', {startDate, endDate: endInput.value});
             },
         }])
+
     }
 
-    updatePlot(plotData) {
-        this.#plotData = plotData;
+    updateHeatMap(plotData) {
+        this.#heatmapPlotData = plotData;
+        makeHeatPlot(this.#heatmapPlotData, 2, MARKERS_OC, 'data');
+    }
+
+    updateInitialPlot(plotData) {
+        this.#initialPlotData = plotData;
 
         switch (this.#typeOfPlot) {
             case 'linear':
-                makeLinearPlot(this.#plotData, this.#traces);
+                makeLinearPlot(this.#initialPlotData, this.#traces);
                 break;
             case 'candles':
-                makeCandlePlot(this.#plotData, this.#traces);
+                makeCandlePlot(this.#initialPlotData, this.#traces);
                 break;
         }
     }
 }
 
-export default RawDataView;
+export default NeuralNetworkProcessingView;
