@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
 
         else:
-            print('Неизвестный тип тестирования')
+            print(f'Неизвестный тип тестирования - {options["type"]} ')
             return
 
 
