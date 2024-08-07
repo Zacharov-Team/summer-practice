@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ToolLocation, Tool, AggregatedData, ModifiedData
+from .models import *
 
 
 class AggregatedDataAdmin(admin.ModelAdmin):
@@ -7,6 +7,10 @@ class AggregatedDataAdmin(admin.ModelAdmin):
 
 
 class ModifiedDataAdmin(admin.ModelAdmin):
+    list_display = ('id', 'data', 'date')
+
+
+class InitialDataAdmin(admin.ModelAdmin):
     list_display = ('id', 'data', 'date')
 
 
@@ -23,5 +27,6 @@ class ToolAdmin(admin.ModelAdmin):
 
 admin.site.register(AggregatedData, AggregatedDataAdmin)
 admin.site.register(ModifiedData, ModifiedDataAdmin)
+admin.site.register(InitialData, InitialDataAdmin)
 admin.site.register(ToolLocation, ToolLocationAdmin)
 admin.site.register(Tool, ToolAdmin)
