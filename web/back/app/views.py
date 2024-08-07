@@ -34,11 +34,11 @@ def log_in(request):
             return JsonResponse({'status': 400, 'error': 'Email and password are required'})
         try:
             user = authenticate(request, username=username, password=password)
-            print(user)
+            print(user, '3')
             if user is not None:
-                print(user)
+                print(user, '2')
                 login(request, user)
-                print(user)
+                print(user, '1')
                 return JsonResponse({
                     'status': 200,
                     'user_data': {
