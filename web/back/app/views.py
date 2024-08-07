@@ -28,7 +28,6 @@ def log_in(request):
         request_dict = json.loads(request.body)
         username = request_dict['username']
         password = request_dict['password']
-        print(username, password)
 
         if not username or not password:
             return JsonResponse({'status': 400, 'error': 'Email and password are required'})
