@@ -12,14 +12,29 @@ from back.settings import BASE_DIR
 from app.models import *
 
 def log_in(request):
+    if request.user.is_authenticated:
+        user = request.user
+        print(user)
+        return JsonResponse({
+            'status': 200,
+            'user_data': {
+                'username': user.username,
+                'name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email
+            }
+        })
     if request.method == 'POST':
         request_dict = json.loads(request.body)
         username = request_dict['username']
         password = request_dict['password']
+        print(username, password)
+
         if not username or not password:
             return JsonResponse({'status': 400, 'error': 'Email and password are required'})
         try:
             user = authenticate(request, username=username, password=password)
+            print(user)
             if user is not None:
                 login(request, user)
                 return JsonResponse({
@@ -35,18 +50,6 @@ def log_in(request):
                 return JsonResponse({'status': 400, 'message': 'Invalid email or password'})
         except ValidationError as e:
             return JsonResponse({'status': 500, 'message': e.message})
-
-    if request.user.is_authenticated:
-        user = request.user
-        return JsonResponse({
-            'status': 200,
-            'user_data': {
-                'username': user.username,
-                'name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email
-            }
-        })
     else:
         return JsonResponse({'status': 401})
 
