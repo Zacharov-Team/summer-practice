@@ -36,7 +36,9 @@ def log_in(request):
             user = authenticate(request, username=username, password=password)
             print(user)
             if user is not None:
+                print(user)
                 login(request, user)
+                print(user)
                 return JsonResponse({
                     'status': 200,
                     'user_data': {
