@@ -7,9 +7,14 @@ from django.core.exceptions import ValidationError
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from back.settings import BASE_DIR
+from django.shortcuts import redirect
 
 
 from app.models import *
+
+
+def index(request):
+    return redirect('http://195.133.201.153:3000/')
 
 def log_in(request):
     if request.user.is_authenticated:

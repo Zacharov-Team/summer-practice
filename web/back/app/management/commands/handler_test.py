@@ -25,7 +25,16 @@ class Command(BaseCommand):
             img = (torch.rand(128, 336, 1)*255)
             input_data = img.cpu().numpy()
         elif options['type'] == 'pic':
-            filepath = os.path.join(BASE_DIR, "uploads_dataset", "df_diff2.csv")
+            name = input('название файла для тестирования без .png')
+
+            if not name:
+                name = 'output_image_20210516_0600'
+
+            name += '.png'
+
+            print(f"Selected filename: {name}")
+
+            filepath = os.path.join(BASE_DIR, "uploads_dataset", name)
             img = Image.open(filepath)
             input_data = np.array(img.data, dtype=np.float32)
 
