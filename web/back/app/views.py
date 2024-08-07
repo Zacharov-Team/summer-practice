@@ -46,8 +46,8 @@ def log_in(request):
                         'name': user.first_name,
                         'last_name': user.last_name,
                         'email': user.email
-                    }
-                })
+                    },
+                }, safe=False)
             else:
                 return JsonResponse({'status': 400, 'message': 'Invalid email or password'})
         except ValidationError as e:
