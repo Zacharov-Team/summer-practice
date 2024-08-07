@@ -37,7 +37,11 @@ def log_in(request):
             print(user, '3')
             if user is not None:
                 print(user, '2')
-                login(request, user)
+                try:
+                    login(request, user)
+                except Exception as e:
+                    print(e)
+                    return JsonResponse({'status': 500, 'message': 'Error logging in'})
                 print(user, '1')
                 return JsonResponse({
                     'status': 200,
