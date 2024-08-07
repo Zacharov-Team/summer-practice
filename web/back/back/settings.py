@@ -51,12 +51,8 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'back.urls'
 
 CORS_ALLOWED_ORIGINS = [
-<<<<<<< HEAD
      'http://localhost:3000',
      'http://195.133.201.153:3000',
-=======
-    'http://localhost:3000',
->>>>>>> 8a0562559b25467bdfdb4044e7f7866b87378f63
 ]
 
 CORS_ALLOW_METHODS = [
