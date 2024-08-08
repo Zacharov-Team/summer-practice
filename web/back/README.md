@@ -41,4 +41,8 @@ pip install numpy
 ```bash
 pip install torch
 ```
+
+
+gunicorn -b 0.0.0.0:80 wsgi:back   
+
  
