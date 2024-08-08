@@ -78,6 +78,7 @@ def handle_model(request):
 
     print(request)
     ownFile = request.FILES.get('img')
+    print(ownFile)
     print('1')
     if not ownFile:
         return JsonResponse({'status': 400, 'message': 'No image uploaded'})
