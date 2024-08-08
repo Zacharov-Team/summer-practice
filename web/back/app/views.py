@@ -121,7 +121,7 @@ def handle_model(request):
     uploaded_image.delete()
     print(f'Файл {file_path} удален.')
     print(out[0].tolist())
-    return JsonResponse({'status': 200, 'data': out[0].tolist()})
+    return JsonResponse({'status': 200, 'data': out[0].tolist(), 'date': 'date': timezone.now()})
 
 
 def log_out(request):
