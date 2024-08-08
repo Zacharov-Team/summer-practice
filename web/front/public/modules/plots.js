@@ -202,13 +202,13 @@ export function makeCandlePlot(plotData, traces) {
       Plotly.newPlot('initial-plot-div', data, layout);
 }
 
-export function makeHeatPlot(plotData, perTool = 4, markersTypes = MARKERS_OCHL, dataName = 'data_values') {
+export function makeHeatPlot(plotData, perTool = 4, markersTypes = MARKERS_OCHL, dataName = 'data_values', plotId = 'heatmap-plot-div') {
 
-    if (!document.getElementById('heatmap-plot-div')) {
+    if (!document.getElementById(plotId)) {
         const plotDiv = document.createElement('div');
     
-        plotDiv.setAttribute('id', 'heatmap-plot-div');
-        plotDiv.classList.add('heatmap-plot-div');
+        plotDiv.setAttribute('id', plotId);
+        plotDiv.classList.add(plotId);
 
         document.body.appendChild(plotDiv);
     }
@@ -260,5 +260,5 @@ export function makeHeatPlot(plotData, perTool = 4, markersTypes = MARKERS_OCHL,
         autosize: false
     };
       
-    Plotly.newPlot('heatmap-plot-div', data, layout);
+    Plotly.newPlot(plotId, data, layout);
 }

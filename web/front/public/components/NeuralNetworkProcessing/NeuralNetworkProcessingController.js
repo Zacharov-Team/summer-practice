@@ -2,7 +2,7 @@ import EventBus from "../../modules/EventBus.js";
 import NeuralNetworkProcessingModel from "./NeuralNetworkProcessingModel.js";
 import NeuralNetworkProcessingView from "./NeuralNetworkProcessingView.js";
 
-const incomingEvents = ["needHeatMap", 'needInitialPlot', "receivedHeatMap", 'receivedInitialPlot'];
+const incomingEvents = ["needHeatMap", 'needPictureNNPPlot', 'needInitialPlot', "receivedHeatMap", 'receivedInitialPlot', 'receivedPictureHeatmapPlot'];
 
 class NeuralNetworkProcessingController {
     constructor(mainEventBus) {

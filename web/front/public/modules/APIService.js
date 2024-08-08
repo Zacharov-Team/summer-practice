@@ -94,6 +94,25 @@ export class NNPService {
         return data;
     }
 
+    async calculatePicture(picture) {
+        const formData = new FormData();
+
+        formData.append('img', picture);
+
+        const response = await fetch(
+            this.baseUrl + 'upload',
+            {
+                method: "POST",
+                credentials: "include",
+                body: formData,
+            }
+        );
+
+        const data = await response.json();
+
+        return data;
+    }
+
     async getInitialPlot(startTime, endTime) {
         const response = await fetch(
             this.baseUrl +

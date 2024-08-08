@@ -4,3 +4,4 @@ export const TOOLS_COUNT = 32;
 export const DAY_DURATION_HEAT_MAP = 14;
 export const MARKERS_OCHL = ['O', 'C', 'H', 'L'];
 export const MARKERS_OC = ['O', 'C'];
+export const VALID_PICTURE_EXTENSIONS = ['png'];

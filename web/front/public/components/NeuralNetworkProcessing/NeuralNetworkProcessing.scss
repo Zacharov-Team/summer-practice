@@ -122,3 +122,30 @@
         width: 1000px;
     }
 }
+
+.nnp-picture-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.add-picture-nnp {
+    &__input {
+        display: none;
+    }
+
+    &__button {
+        background-color: lightgray;
+        border: none;
+        border-radius: 7px;
+        padding: 5px 10px;
+    }
+}
+
+.calc-picture-nnp {
+    &__button {
+        background-color: lightgray;
+        border: none;
+        border-radius: 7px;
+        padding: 5px 10px;
+    }
+}

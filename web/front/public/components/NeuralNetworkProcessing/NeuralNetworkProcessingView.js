@@ -2,7 +2,7 @@ import "./NeuralNetworkProcessing.scss";
 import DivComponent from "../DummyComponents/DivComponent";
 import NoneInnerTextComponent from "../DummyComponents/NoneInnerTextComponent";
 import HasInnerTextComponent from "../DummyComponents/HasInnerTextComponent";
-import { MARKERS_OC, TOOLS_COUNT } from "../../modules/consts";
+import { MARKERS_OC, TOOLS_COUNT, VALID_PICTURE_EXTENSIONS } from "../../modules/consts";
 import { makeCandlePlot, makeHeatPlot, makeLinearPlot } from "../../modules/plots";
 
 class NeuralNetworkProcessingView {
@@ -23,8 +23,9 @@ class NeuralNetworkProcessingView {
         }
 
         this.#mainEventBus.addEventListener("clickedRenderNNPPage", this.render.bind(this));
-        this.#localEventBus.addEventListener('receivedHeatMap', this.updateHeatMap.bind(this));
+        this.#localEventBus.addEventListener('receivedHeatMap', this.updateGlobalHeatMap.bind(this));
         this.#localEventBus.addEventListener('receivedInitialPlot', this.updateInitialPlot.bind(this));
+        this.#localEventBus.addEventListener('receivedPictureHeatmapPlot', this.updatePictureHeatMap.bind(this));
     }
 
     render() {
@@ -67,7 +68,14 @@ class NeuralNetworkProcessingView {
         const dpDiv = document.createElement("div");
         dpDiv.setAttribute("id", "nnp");
         dpDiv.classList.add("nnp");
-        (dpDiv.innerHTML = (new DivComponent({ id: "calculating" }, ["calculating"], "", [
+        (dpDiv.innerHTML = (new DivComponent({}, ['nnp-picture'], '', [
+            new DivComponent({}, ['nnp-picture-buttons'], '', [
+                new HasInnerTextComponent('button', {id: 'add-picture-nnp'}, ['add-picture-nnp__button'], 'Добавить картинку'),
+                new NoneInnerTextComponent('input', {id: 'add-picture-nnp__input', type: 'file'}, ['add-picture-nnp__input']),
+                new HasInnerTextComponent('button', {id: 'calc-picture-nnp'}, ['calc-picture-nnp__button'], 'Вычислить'),
+            ]),
+            new DivComponent({id: 'heatmap-1-plot-div'}, ['heatmap-1-plot-div']),
+        ])).render() + (new DivComponent({ id: "calculating" }, ["calculating"], "", [
                 new DivComponent({}, ['left-side-radios'], '', [
                     new DivComponent({id: 'radio-zone'}, ['radio-zone'], '', [
                         new DivComponent({}, ['radio-layout'], '1 day', [
@@ -143,6 +151,27 @@ class NeuralNetworkProcessingView {
 
         document.body.appendChild(dpDiv);
 
+        const addPictureInput = document.getElementById('add-picture-nnp__input');
+
+        document.getElementById('add-picture-nnp').addEventListener('click', () => {
+            addPictureInput.click();
+        });
+
+        document.getElementById('calc-picture-nnp').addEventListener('click', () => {
+
+            if (!addPictureInput.files.length) {
+                return;
+            }
+
+            const picture = addPictureInput.files[0];
+
+            if (!VALID_PICTURE_EXTENSIONS.includes(picture.name.split('.').at(-1))) {
+                return;
+            }
+
+            this.#localEventBus.emit('needPictureNNPPlot', picture);
+        });
+
         //const startInput = document.getElementById(startDate.getAttr('id'));
         const endInput = document.getElementById(endDate.getAttr('id'));
 
@@ -198,9 +227,13 @@ class NeuralNetworkProcessingView {
 
     }
 
-    updateHeatMap(plotData) {
+    updatePictureHeatMap(plotData) {
+        makeHeatPlot(plotData, 2, MARKERS_OC, 'data', 'heatmap-1-plot-div');
+    }
+
+    updateGlobalHeatMap(plotData) {
         this.#heatmapPlotData = plotData;
-        makeHeatPlot(this.#heatmapPlotData, 2, MARKERS_OC, 'data');
+        makeHeatPlot(this.#heatmapPlotData, 2, MARKERS_OC, 'data', 'heatmap-2-plot-div');
     }
 
     updateInitialPlot(plotData) {

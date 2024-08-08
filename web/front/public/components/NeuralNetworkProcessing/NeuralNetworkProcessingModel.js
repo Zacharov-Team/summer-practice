@@ -14,6 +14,7 @@ class NeuralNetworkProcessingModel {
             this.getHeatMap.bind(this)
         );
         this.#localEventBus.addEventListener('needInitialPlot', this.getInitialPlot.bind(this));
+        this.#localEventBus.addEventListener('needPictureNNPPlot', this.calculatePicture.bind(this));
     }
 
     async getHeatMap({ startDate, endDate }) {
@@ -25,6 +26,21 @@ class NeuralNetworkProcessingModel {
         switch (response.status) {
             case 200:
                 this.#localEventBus.emit("receivedHeatMap", response.data);
+                break;
+            case 401:
+                this.#mainEventBus.emit('clickedRenderSignInPage');
+                break;
+        }
+    }
+
+    async calculatePicture(picture) {
+        const response = await this.nnpService.calculatePicture(picture);
+
+        console.log(response);
+
+        switch (response.status) {
+            case 200:
+                this.#localEventBus.emit("receivedPictureHeatmapPlot", response.data);
                 break;
             case 401:
                 this.#mainEventBus.emit('clickedRenderSignInPage');
