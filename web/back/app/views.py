@@ -121,10 +121,10 @@ def handle_model(request):
     uploaded_image.delete()
     print(f'Файл {file_path} удален.')
     print(out[0].tolist())
-    data_values = {
+    data_values =[ {
         'data': out[0].tolist(),
         'date': timezone.now()
-    }
+    }]
     return JsonResponse({'status': 200, 'data': data_values})
 
 
