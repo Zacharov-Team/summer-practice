@@ -41,3 +41,11 @@
     color: #006dd1;
     cursor: pointer;
 }
+
+.incorrect-info {
+    color: red;
+    
+    &_invisible {
+        display: none;
+    }
+}

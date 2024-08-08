@@ -150,7 +150,7 @@ class Header {
     }
 
     enteredIntoAccount() {
-        const fio = User.getFio();
+        const fio = User.getUsername();
 
         if (!fio) {
             return;
@@ -295,7 +295,7 @@ class Header {
     }
 
     exitedFromAccount() {
-        if (User.getFio()) {
+        if (User.getUsername()) {
             return;
         }
 

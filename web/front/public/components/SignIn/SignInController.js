@@ -2,7 +2,7 @@ import EventBus from "../../modules/EventBus.js";
 import SignInView from "./SignInView.js";
 import SignInModel from "./SignInModel.js";
 
-const incomingEvents = ["tryToSignIn"];
+const incomingEvents = ["tryToSignIn", 'incorrectInfo'];
 
 class SignInController {
     constructor(mainEventBus) {

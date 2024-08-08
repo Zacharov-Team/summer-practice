@@ -39,6 +39,7 @@ class SignInModel {
             this.#mainEventBus.emit("enteredIntoAccount");
             this.#mainEventBus.emit("clickedRenderRawDataPage");
         } else {
+            this.#localEventBus.emit('incorrectInfo');
         }
     }
 }

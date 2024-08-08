@@ -15,6 +15,7 @@ class SignInView {
             "clickedRenderSignInPage",
             this.render.bind(this)
         );
+        this.#localEventBus.addEventListener('incorrectInfo', this.incorrect.bind(this));
     }
 
     render() {
@@ -25,12 +26,6 @@ class SignInView {
         while (document.body.childNodes.length > 1) {
             document.body.removeChild(document.body.lastChild);
         }
-
-        const divRegister = new DivComponent(
-            { id: "choose-register" },
-            ["sign-in-choose-register"],
-            "Зарегистрироваться"
-        );
 
         const mailInput = new NoneInnerTextComponent(
             "input",
@@ -63,13 +58,11 @@ class SignInView {
         signInDiv.setAttribute("id", "sign-in-page");
         signInDiv.classList.add("sign-in-page");
         signInDiv.innerHTML =
+            new DivComponent({id: 'incorrect-info'}, ['incorrect-info', 'incorrect-info_invisible'], 'Неверные данные').render() +
             new DivComponent({ id: "sign-in-form" }, ["sign-in-form"], "", [
                 mailInput,
                 passInput,
                 signInButton,
-            ]).render() +
-            new DivComponent({}, ["sign-in-go-to-register"], "", [
-                divRegister,
             ]).render();
 
         document.body.appendChild(signInDiv);
@@ -88,6 +81,10 @@ class SignInView {
                 },
             },
         ]);
+    }
+
+    incorrect() {
+        document.getElementById('incorrect-info').classList.remove('incorrect-info_invisible');
     }
 }
 

@@ -2,7 +2,7 @@ import { AuthService } from "./APIService";
 
 class User {
     #email;
-    #fio;
+    #username;
     #online;
 
     constructor() {
@@ -17,28 +17,29 @@ class User {
         );
 
         switch (response.status) {
+            case 500:
             case 401:
                 return false;
             case 200:
-                this.#email = response.user_data,email;
-                this.#fio = `${response.user_data.name} ${response.user_data.last_name}`;
+                this.#email = response.user_data.email;
+                this.#username = response.user_data.username;
                 this.#online = true;
                 return true;
         }
     }
 
-    setInfo({email, name, last_name}) {
+    setInfo({email, username}) {
         this.#email = email;
-        this.#fio = `${name} ${last_name}`;
+        this.#username = username;
         this.#online = true;
     }
 
-    getFio() {
+    getUsername() {
         if (!this.#online) {
             return null;
         }
 
-        return this.#fio;
+        return this.#username;
     }
 
     exitFromAccount() {
