@@ -125,7 +125,7 @@ def handle_model(request):
         'data': out[0].tolist(),
         'date': timezone.now()
     }]
-    return JsonResponse({'status': 200, 'data_values': data_values})
+    return JsonResponse({'status': 200, 'data': data_values})
 
 
 def log_out(request):
