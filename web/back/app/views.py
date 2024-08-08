@@ -68,51 +68,61 @@ from PIL import Image
 import datetime
 from django.utils import timezone
 
+
 def handle_model(request):
     if request.method == 'GET':
         return JsonResponse({'status': 405})
 
     return JsonResponse({'status': 200})
 
+    ownFile = request.FILES.get('img')
 
-    #ownFile = request.FILES.get('img')
-    #if not ownFile:
-        #return JsonResponse({'status': 400, 'message': 'No image uploaded'})
-    
-    
-    #triton_client = grpcclient.InferenceServerClient(
-        #url="0.0.0.0:8001"
-    #)
+    if not ownFile:
+        return JsonResponse({'status': 400, 'message': 'No image uploaded'})
 
-    #try:
-        #img = (torch.rand(128, 336, 1)*255)
+    # Путь к папке для загрузки файлов
+    upload_dir = os.path.join(BASE_DIR, 'uploads_dataset')
 
-        #input_data = np.array(img.data, dtype=np.float32)
+    # Создание папки для загрузки файлов, если она не существует
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
 
-        #input_data = input_data.reshape([-1] + list(input_data.shape))
+    # Сохранение файла в папке
+    file_path = os.path.join(upload_dir, ownFile.name)
 
-        #img = Image.open(os.path.join(BASE_DIR, "uploads_dataset", 'o1.png'))
-        #input_data = np.array(img, dtype=np.float32)
 
-        #input_data = input_data.reshape(list(input_data.shape))
+    triton_client = grpcclient.InferenceServerClient(
+        url="0.0.0.0:8001"
+    )
 
-        #inputs = [grpcclient.InferInput("keras_tensor", input_data.shape, "FP32")]
+    # Путь к файлу изображения
+    image_path = os.path.join(BASE_DIR, file_path)
 
-        #inputs[0].set_data_from_numpy(input_data)
+    if not os.path.exists(image_path):
+        print(f'Файл {image_path} не найден.')
+        return JsonResponse({'status': 500, 'message': 'Ошибка загрузки файла'})
 
-        #outputs = [
-            #grpcclient.InferRequestedOutput("output_0"),
-        #]
-        #result = triton_client.infer(
-            #model_name="resnet18", inputs=inputs, outputs=outputs
-        #)
-        
-        #out = result.as_numpy('output_0')
-    #except Exception as e:
-        #print(e)
-        #return JsonResponse({})
-        
-    #return JsonResponse({'status': 200, 'data': out[0].tolist()})
+    # Загрузка и подготовка изображения
+    img = Image.open(image_path).convert('L')  # конвертация в градации серого
+    img = img.resize((336, 128))  # изменение размера изображения
+    input_data = np.array(img).astype(np.float32) / 255.0 * 2 - 1  # нормализация как в обучении
+    input_data = input_data.reshape(128, 336, 1)
+
+    input_data = input_data.reshape([-1] + list(input_data.shape))
+
+    inputs = [grpcclient.InferInput("keras_tensor", input_data.shape, "FP32")]
+    inputs[0].set_data_from_numpy(input_data)
+
+    outputs = [
+        grpcclient.InferRequestedOutput("output_0"),
+    ]
+
+    result = triton_client.infer(
+        model_name="resnet18", inputs=inputs, outputs=outputs
+    )
+    out = result.as_numpy('output_0')
+    os.remove(file_path)
+    return JsonResponse({'status': 200, 'data': out[0].tolist()})
 
 
 def log_out(request):
