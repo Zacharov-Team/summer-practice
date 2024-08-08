@@ -24,7 +24,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./uploads_pics:/uploads_pics
+      - ./uploads_pics:/uploads_pics/
     networks:
       - app-network
 
