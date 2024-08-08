@@ -6,6 +6,8 @@ import os
 env = Env()
 env.read_env()  # Загрузить переменные из файла .env
 
+
+
 # Настройки Django
 DEBUG = False
 SECRET_KEY = env("SECRET_KEY")
@@ -136,3 +138,5 @@ USE_TZ = False
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'auth.User'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads_pics')  # Путь до директории, куда будут сохраняться файлы

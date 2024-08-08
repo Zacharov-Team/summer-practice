@@ -5,6 +5,9 @@ from django.utils import timezone
 
 # Create your models here.
 
+class Uploads(models.Model):
+    file = models.ImageField(upload_to='')
+
 class CustomUser(models.Model):
     role = models.CharField(max_length=50)
     user = models.OneToOneField(User, on_delete=models.CASCADE)

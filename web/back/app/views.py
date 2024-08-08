@@ -74,23 +74,19 @@ def handle_model(request):
     if request.method == 'GET':
         return JsonResponse({'status': 405})
 
-    return JsonResponse({'status': 200})
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 401})
 
     ownFile = request.FILES.get('img')
 
     if not ownFile:
         return JsonResponse({'status': 400, 'message': 'No image uploaded'})
 
-    # Путь к папке для загрузки файлов
-    upload_dir = os.path.join(BASE_DIR, 'uploads_dataset')
+    uploaded_image = Uploads.objects.create(image=ownFile)
+    file_path = uploaded_image.image.path
 
-    # Создание папки для загрузки файлов, если она не существует
-    if not os.path.exists(upload_dir):
-        os.makedirs(upload_dir)
-
-    # Сохранение файла в папке
-    file_path = os.path.join(upload_dir, ownFile.name)
-
+    if not os.path.exists(file_path):
+        return JsonResponse({'status': 500, 'message': 'Ошибка загрузки файла'})
 
     triton_client = grpcclient.InferenceServerClient(
         url="0.0.0.0:8001"
@@ -122,7 +118,9 @@ def handle_model(request):
         model_name="resnet18", inputs=inputs, outputs=outputs
     )
     out = result.as_numpy('output_0')
-    os.remove(file_path)
+    # Удаление файла после обработки
+    uploaded_image.delete()
+
     return JsonResponse({'status': 200, 'data': out[0].tolist()})
 
 
