@@ -80,7 +80,7 @@ def handle_model(request):
         return JsonResponse({'status': 400, 'message': 'No image uploaded'})
     print('2')
 
-    uploaded_image = Uploads.objects.create(image=ownFile)
+    uploaded_image = Uploads.objects.create(file=ownFile)
     file_path = uploaded_image.image.path
 
     if not os.path.exists(file_path):
