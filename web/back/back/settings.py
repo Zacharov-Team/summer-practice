@@ -140,3 +140,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'auth.User'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads_pics')  # Путь до директории, куда будут сохраняться файлы
+
+APPEND_SLASH=False
