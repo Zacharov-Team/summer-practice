@@ -75,15 +75,17 @@ def handle_model(request):
     if not request.user.is_authenticated:
         return JsonResponse({'status': 401})
     print('о мы тебя знаем')
+
     if request.method == 'GET':
         return JsonResponse({'status': 405})
     print('не GET-запрос')
 
+    print(request)
     ownFile = request.FILES.get('img')
-
+    print('1')
     if not ownFile:
         return JsonResponse({'status': 400, 'message': 'No image uploaded'})
-
+    print('2')
     uploaded_image = Uploads.objects.create(image=ownFile)
     file_path = uploaded_image.image.path
 
