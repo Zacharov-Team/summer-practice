@@ -43,6 +43,7 @@ pip install torch
 ```
 
 
-gunicorn -b 0.0.0.0:80 wsgi:back   
+gunicorn -b 0.0.0.0:80 back.wsgi:application
+ 
 
  
