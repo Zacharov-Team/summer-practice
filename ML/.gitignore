@@ -1,0 +1,5 @@
+*.save
+grey_pics.zip
+pics_grey/
+logs/
+pmml02_NF.py
