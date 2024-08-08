@@ -64,9 +64,10 @@ import tritonclient.grpc as grpcclient
 from PIL import Image
 import datetime
 from django.utils import timezone
-
+import pdb
 
 def handle_model(request):
+    pdb.set_trace()
     print('ЗАШЛИ СЮДА')
     if not request.user.is_authenticated:
         return JsonResponse({'status': 401})
