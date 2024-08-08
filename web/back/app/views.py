@@ -71,6 +71,7 @@ from django.utils import timezone
 
 
 def handle_model(request):
+    print('ЗАШЛИ СЮДА')
     if request.method == 'GET':
         return JsonResponse({'status': 405})
     print('не GET-запрос')
