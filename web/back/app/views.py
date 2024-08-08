@@ -72,12 +72,13 @@ from django.utils import timezone
 
 def handle_model(request):
     print('ЗАШЛИ СЮДА')
-    if request.method == 'GET':
-        return JsonResponse({'status': 405})
-    print('не GET-запрос')
     if not request.user.is_authenticated:
         return JsonResponse({'status': 401})
     print('о мы тебя знаем')
+    if request.method == 'GET':
+        return JsonResponse({'status': 405})
+    print('не GET-запрос')
+
     ownFile = request.FILES.get('img')
 
     if not ownFile:
