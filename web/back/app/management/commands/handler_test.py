@@ -24,20 +24,27 @@ class Command(BaseCommand):
         if options['type'] == 'random':
             img = (torch.rand(128, 336, 1)*255)
             input_data = img.cpu().numpy()
+
         elif options['type'] == 'pic':
-            name = input('название файла для тестирования без .png')
+            name = input('название файла для тестирования без .png: ')
 
             if not name:
                 name = 'output_image_20210516_0600'
 
             name += '.png'
 
-            print(f"Selected filename: {name}")
+            # Путь к файлу изображения
+            image_path = os.path.join(BASE_DIR, 'uploads_dataset', name)
 
-            filepath = os.path.join(BASE_DIR, "uploads_dataset", name)
-            img = Image.open(filepath)
-            input_data = np.array(img.data, dtype=np.float32)
+            if not os.path.exists(image_path):
+                print(f'Файл {image_path} не найден.')
+                return
 
+            # Загрузка и подготовка изображения
+            img = Image.open(image_path).convert('L')  # конвертация в градации серого
+            img = img.resize((336, 128))  # изменение размера изображения
+            input_data = np.array(img).astype(np.float32) / 255.0 * 2 - 1  # нормализация как в обучении
+            input_data = input_data.reshape(128, 336, 1)
 
         else:
             print(f'Неизвестный тип тестирования - {options["type"]} ')
