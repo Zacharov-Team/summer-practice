@@ -81,7 +81,7 @@ def handle_model(request):
     print('2')
 
     uploaded_image = Uploads.objects.create(file=ownFile)
-    file_path = uploaded_image.image.path
+    file_path = uploaded_image.file.path
 
     if not os.path.exists(file_path):
         return JsonResponse({'status': 500, 'message': 'Ошибка загрузки файла'})
@@ -120,7 +120,7 @@ def handle_model(request):
     # Удаление файла после обработки
     uploaded_image.delete()
     print(f'Файл {file_path} удален.')
-    print(f'{out[0].type} -- {out[0].size}')
+    print(out[0].tolist())
     return JsonResponse({'status': 200, 'data': out[0].tolist()})
 
 
