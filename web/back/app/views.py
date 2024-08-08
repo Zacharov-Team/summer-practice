@@ -73,10 +73,10 @@ from django.utils import timezone
 def handle_model(request):
     if request.method == 'GET':
         return JsonResponse({'status': 405})
-
+    print('не GET-запрос')
     if not request.user.is_authenticated:
         return JsonResponse({'status': 401})
-
+    print('о мы тебя знаем')
     ownFile = request.FILES.get('img')
 
     if not ownFile:
@@ -87,6 +87,7 @@ def handle_model(request):
 
     if not os.path.exists(file_path):
         return JsonResponse({'status': 500, 'message': 'Ошибка загрузки файла'})
+    print(f'Файл загружен {file_path}')
 
     triton_client = grpcclient.InferenceServerClient(
         url="0.0.0.0:8001"
@@ -113,14 +114,15 @@ def handle_model(request):
     outputs = [
         grpcclient.InferRequestedOutput("output_0"),
     ]
-
+    print('Обработка изображения')
     result = triton_client.infer(
         model_name="resnet18", inputs=inputs, outputs=outputs
     )
     out = result.as_numpy('output_0')
     # Удаление файла после обработки
     uploaded_image.delete()
-
+    print(f'Файл {file_path} удален.')
+    print(f'{out[0].type} -- {out[0].size}')
     return JsonResponse({'status': 200, 'data': out[0].tolist()})
 
 
