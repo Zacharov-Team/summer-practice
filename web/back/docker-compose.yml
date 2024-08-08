@@ -28,6 +28,22 @@ services:
     networks:
       - app-network
 
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django-web
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - pgdb
+    environment:
+      - DJANGO_SETTINGS_MODULE=back.settings
+    networks:
+      - app-network
+
 volumes:
   pg_data:
   nginx_data:
