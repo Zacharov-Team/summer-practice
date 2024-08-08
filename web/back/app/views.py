@@ -12,10 +12,6 @@ from django.shortcuts import redirect
 
 from app.models import *
 
-
-def index(request):
-    return redirect('http://195.133.201.153:3000/')
-
 def log_in(request):
     if request.user.is_authenticated:
         user = request.user
