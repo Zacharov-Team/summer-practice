@@ -25,8 +25,6 @@ services:
       - "80:80"
     volumes:
       - ./uploads_pics:/uploads_pics
-    depends_on:
-      - app
     networks:
       - app-network
 
