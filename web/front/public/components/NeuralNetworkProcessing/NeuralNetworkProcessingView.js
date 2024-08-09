@@ -74,7 +74,7 @@ class NeuralNetworkProcessingView {
                 new NoneInnerTextComponent('input', {id: 'add-picture-nnp__input', type: 'file'}, ['add-picture-nnp__input']),
                 new HasInnerTextComponent('button', {id: 'calc-picture-nnp'}, ['calc-picture-nnp__button'], 'Вычислить'),
             ]),
-            new DivComponent({id: 'heatmap-1-plot-div'}, ['heatmap-1-plot-div']),
+            new DivComponent({id: 'heatmap-1-plot-div'}, ['heatmap-plot-div']),
         ])).render() + (new DivComponent({ id: "calculating" }, ["calculating"], "", [
                 new DivComponent({}, ['left-side-radios'], '', [
                     new DivComponent({id: 'radio-zone'}, ['radio-zone'], '', [
@@ -228,7 +228,7 @@ class NeuralNetworkProcessingView {
     }
 
     updatePictureHeatMap(plotData) {
-        makeHeatPlot(plotData, 2, MARKERS_OC, 'data', 'heatmap-1-plot-div', 300);
+        makeHeatPlot(plotData, 2, MARKERS_OC, 'data', 'heatmap-1-plot-div', 600, 'NNP');
     }
 
     updateGlobalHeatMap(plotData) {

@@ -202,7 +202,7 @@ export function makeCandlePlot(plotData, traces) {
       Plotly.newPlot('initial-plot-div', data, layout);
 }
 
-export function makeHeatPlot(plotData, perTool = 4, markersTypes = MARKERS_OCHL, dataName = 'data_values', plotId = 'heatmap-plot-div', ownWidth = 1200) {
+export function makeHeatPlot(plotData, perTool = 4, markersTypes = MARKERS_OCHL, dataName = 'data_values', plotId = 'heatmap-plot-div', ownWidth = 1200, titleName = 'Heatmap', needTextOnCells = false) {
 
     if (!document.getElementById(plotId)) {
         const plotDiv = document.createElement('div');
@@ -221,12 +221,25 @@ export function makeHeatPlot(plotData, perTool = 4, markersTypes = MARKERS_OCHL,
         hours.push(hourData.date);
     });
 
-    for (let i = 0; i < TOOLS_COUNT * perTool; i++) {
+    for (let i = TOOLS_COUNT * perTool - 2; i >= 0; i -= 2) {
         let zArray = [];
         tools.push(`T. ${Math.floor(i / perTool) + 1}: ${markersTypes[i % perTool]}`);
 
         plotData.forEach((hourData) => {
             let value = hourData[dataName][i];
+
+            if (value < -1) {
+                value = null;
+            }
+            zArray.push(value);
+        });
+
+        strings.push(zArray);
+        zArray = [];
+        tools.push(`T. ${Math.floor((i + 1) / perTool) + 1}: ${markersTypes[(i + 1) % perTool]}`);
+
+        plotData.forEach((hourData) => {
+            let value = hourData[dataName][i + 1];
 
             if (value < -1) {
                 value = null;
@@ -253,12 +266,29 @@ export function makeHeatPlot(plotData, perTool = 4, markersTypes = MARKERS_OCHL,
     ];
 
     let layout = {
-        title: 'Heatmap',
+        title: titleName,
         showlegend: true,
         width: ownWidth,
         height: 700,
-        autosize: false
+        autosize: false, 
+        annotations: [],
     };
+
+    strings.forEach((string, index) => {
+        string.forEach((cell, index2) => {
+            layout.annotations.push({
+                x: hours[index2],
+                y: tools[index],
+                text: cell,
+                font: {
+                    family: 'Arial',
+                    size: 12,
+                    color: 'black',
+                },
+                showarrow: false,
+            });
+        });
+    });
       
     Plotly.newPlot(plotId, data, layout);
 }
