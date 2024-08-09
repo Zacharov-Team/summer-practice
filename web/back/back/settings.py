@@ -9,7 +9,8 @@ env.read_env()  # Загрузить переменные из файла .env
 
 
 # Настройки Django
-DEBUG = True
+DEBUG = False
+
 SECRET_KEY = env("SECRET_KEY")
 
 # Set the project base directory
@@ -141,4 +142,4 @@ AUTH_USER_MODEL = 'auth.User'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads_pics')  # Путь до директории, куда будут сохраняться файлы
 
-APPEND_SLASH=False
+# APPEND_SLASH=False

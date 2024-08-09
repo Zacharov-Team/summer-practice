@@ -181,3 +181,5 @@ cython_debug/
 
 .env
 uploads_dataset/
+uploads_pics/
+nohup.out
