@@ -228,7 +228,7 @@ class NeuralNetworkProcessingView {
     }
 
     updatePictureHeatMap(plotData) {
-        makeHeatPlot(plotData, 2, MARKERS_OC, 'data', 'heatmap-1-plot-div');
+        makeHeatPlot(plotData, 2, MARKERS_OC, 'data', 'heatmap-1-plot-div', 300);
     }
 
     updateGlobalHeatMap(plotData) {
