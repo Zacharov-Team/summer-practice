@@ -66,10 +66,90 @@ import datetime
 from django.utils import timezone
 
 
+
+
+import pandas as pd
+import numpy as np
+from PIL import Image
+
+import os
+from datetime import datetime
+import warnings
+import matplotlib.pyplot as plt
+warnings.filterwarnings("ignore")
+
+# from preproc import *
+# from graph import *
+
+
+
+
+def value_to_color(value):
+    if value >= 0:
+        green_intensity = int(255 * value)
+        green_intensity = np.clip(green_intensity, 0, 255)  # Clamping the values
+        return (255 - green_intensity, 255, 255 - green_intensity)
+    else:
+        red_intensity = int(255 * abs(value))
+        red_intensity = np.clip(red_intensity, 0, 255)  # Clamping the values
+        return (255, 255 - red_intensity, 255 - red_intensity)
+
+
+
+def create_image_from_aggregated_data(end_date, window_hours=24 * 7 * 2):
+
+    start_date = end_date - pd.DateOffset(hours=window_hours)
+
+    # Fetch data from the Django model
+    aggregated_data = AggregatedData.objects.filter(date__range=[start_date, end_date]).order_by('date')
+    data_list = list(aggregated_data.values('date', 'data_values'))
+
+    if not data_list:
+        raise ValueError("No data available for the specified date range.")
+
+    # Convert the list to a DataFrame
+    df = pd.DataFrame(data_list)
+    df['date'] = pd.to_datetime(df['date'])
+    df = df.set_index('date')
+
+    # Determine the image dimensions
+    image_height = len(df)  # Number of rows corresponds to the number of data points
+    image_width = len(df['data_values'].iloc[0])  # Number of columns corresponds to the length of data_values array
+
+    # Create an empty image array
+    image_data = np.zeros((image_height, image_width, 3), dtype=np.uint8)
+
+    # Populate the image array with data
+    for row in range(image_height):
+        for col in range(image_width):
+            value = df['data_values'].iloc[row][col]
+            image_data[row, col] = value_to_color(value)
+
+    # Create the image from the array
+    image = Image.fromarray(image_data)
+
+    # Return the image object
+    return image
+
+
 def handle_model(request):
     if not request.user.is_authenticated:
         return JsonResponse({'status': 401})
-    ownFile = request.FILES.get('img')
+
+    # TODO checkpoint
+    flag = request.GET.get('flag')
+    # если True - генерим картинку не сервере, иначе  - загружается
+    if flag == True:
+        pd.set_option("display.max_columns", None)
+        plt.rcParams["figure.figsize"] = (10, 6)
+
+        RANDOM_SEED = 2023
+
+        end_date = request.GET.get('end_date')
+        ownFile = create_image_from_aggregated_data(end_date)
+    else:
+        ownFile = request.FILES.get('img')
+
     if not ownFile:
         return JsonResponse({'status': 400, 'message': 'No image uploaded'})
 
