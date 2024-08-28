@@ -71,7 +71,7 @@ CORS_ALLOW_HEADERS = [
     'Authorization',
 ]
 
-CORS_ALLOW_CREDENTIALS = False
+CORS_ALLOW_CREDENTIALS = True
 
 TEMPLATES = [
     {
