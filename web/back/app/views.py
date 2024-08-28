@@ -193,7 +193,7 @@ def handle_model(request):
 
     grayscale_image = Image.fromarray(grayscale_image_data, 'L')
     img = grayscale_image.convert
-    img = img.resize((336, 128))  # изменение размера изображения
+    # img = img.resize((336, 128))  # изменение размера изображения
     input_data = np.array(img).astype(np.float32) / 255.0 * 2 - 1  # нормализация как в обучении
     input_data = input_data.reshape(128, 336, 1)
 
