@@ -44,6 +44,13 @@ class NeuralNetworkProcessingView {
             "Вычислить"
         );
 
+        const generateButton = new HasInnerTextComponent(
+            "button",
+            { id: "generate-button" },
+            ["calculate-button"],
+            "Вычислить"
+        );
+
         /*const startDate = new NoneInnerTextComponent(
             "input",
             { type: "date", id: 'start-date-input' },
@@ -74,6 +81,41 @@ class NeuralNetworkProcessingView {
                 new DivComponent({id: 'picture-choosed'}, ['picture-choosed__p'], 'Картинка не выбрана'),
                 new NoneInnerTextComponent('input', {id: 'add-picture-nnp__input', type: 'file'}, ['add-picture-nnp__input']),
                 new HasInnerTextComponent('button', {id: 'calc-picture-nnp'}, ['calc-picture-nnp__button'], 'Вычислить'),
+            ]),
+            new DivComponent({}, [], 'Или'),
+            new DivComponent({ id: "calculating" }, ["calculating"], "", [
+                new DivComponent({}, ['left-side-radios'], '', [
+                    new DivComponent(
+                        { id: "calculating-variants" },
+                        ["calculating-variants"],
+                        "",
+                        [
+                            new DivComponent(
+                                { id: "first-string-variants" },
+                                ["string-variants"],
+                                "",
+                                [
+                                    new DivComponent(
+                                        { id: "period-variant" },
+                                        ["variant-div"],
+                                        "Конечная дата",
+                                        [
+                                            endDate,
+                                        ]
+                                    ),
+                                ]
+                            ),
+                        ]
+                    ),
+                ]),
+                new DivComponent(
+                    { id: "generate-div" },
+                    ["calculate-div"],
+                    "",
+                    [
+                        generateButton,
+                    ]
+                ),
             ]),
             new DivComponent({id: 'heatmap-1-plot-div'}, ['heatmap-plot-div']),
         ])).render() + (new DivComponent({ id: "calculating" }, ["calculating"], "", [
@@ -235,6 +277,13 @@ class NeuralNetworkProcessingView {
 
                 this.#localEventBus.emit('needHeatMap', {startDate, endDate: endInput.value});
                 this.#localEventBus.emit('needInitialPlot', {startDate, endDate: endInput.value});
+            },
+        }])
+
+        generateButton.addListeners([{
+            event: 'click',
+            func: () => {
+                this.#localEventBus.emit('needGeneratePicture', endInput.value);
             },
         }])
 

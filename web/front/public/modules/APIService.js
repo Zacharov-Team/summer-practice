@@ -113,6 +113,20 @@ export class NNPService {
         return data;
     }
 
+    async generatePicture(endDate) {
+        const response = await fetch(
+            this.baseUrl + `upload?flag=true&end_date=${endDate}`,
+            {
+                method: "POST",
+                credentials: "include",
+            }
+        );
+
+        const data = await response.json();
+
+        return data;
+    } 
+
     async getInitialPlot(startTime, endTime) {
         const response = await fetch(
             this.baseUrl +

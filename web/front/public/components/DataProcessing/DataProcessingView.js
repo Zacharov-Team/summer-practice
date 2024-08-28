@@ -79,9 +79,6 @@ class DataProcessingView {
                         ]
                     ),
                 ]),
-                new DivComponent({}, [], 'Использовать картинку для обработки нейросетью', [
-                    new NoneInnerTextComponent('input', {id: 'need-go-to-nnp', type:'checkbox'}),
-                ]),
                 new DivComponent(
                     { id: "calculate-div" },
                     ["calculate-div"],
@@ -93,17 +90,6 @@ class DataProcessingView {
             ])).render());
 
         document.body.appendChild(dpDiv);
-
-        const inputHEATMAP = document.createElement("input");
-        inputHEATMAP.setAttribute('id', 'go-picture-to-nnp');
-        inputHEATMAP.setAttribute('type', 'file');
-        inputHEATMAP.classList.add('add-picture-nnp__input');
-
-        document.body.appendChild(inputHEATMAP);
-
-        inputHEATMAP.addEventListener('change', () => {
-            this.goToNNP();
-        })
 
         const endInput = document.getElementById(endDate.getAttr('id'));
         endInput.valueAsDate = new Date('2021-01-08');
@@ -141,34 +127,6 @@ class DataProcessingView {
 
     uploadPlot(plotData) {
         makeHeatPlot(plotData);
-
-        Plotly.toImage('heatmap-plot-div', {format: 'png', width: 800, height: 600}).then(function(dataUrl) {
-            fetch(dataUrl)
-            .then(res => res.blob())
-            .then(blob => {
-                const file = new File([blob], 'dot.png', blob)
-                const inputHEATMAP = document.getElementById('go-picture-to-nnp');
-                const dt = new DataTransfer();
-
-                dt.items.add(file);
-                inputHEATMAP.files = dt.files;
-                inputHEATMAP.dispatchEvent(new Event('change'));
-            })
-        });
-    }
-
-    goToNNP() {
-
-        const needGoToNNP = document.getElementById('need-go-to-nnp');
-
-        if (!(needGoToNNP.checked)) {
-            return;
-        }
-
-        const inputHEATMAP = document.getElementById('go-picture-to-nnp');
-
-        document.getElementById('nnp-button').click();
-        this.#mainEventBus.emit("needPictureNNPPlot", inputHEATMAP.files[0]);
     }
 }
 
