@@ -72,6 +72,7 @@ import pandas as pd
 import numpy as np
 from PIL import Image
 
+from io import BytesIO
 import os
 from datetime import datetime
 import warnings
@@ -94,8 +95,8 @@ def value_to_color(value):
         return (255, 255 - red_intensity, 255 - red_intensity)
 
 
-
 def create_image_from_aggregated_data(end_date, window_hours=24 * 7 * 2):
+    # Convert end_date to a pandas Timestamp if it's a string
     if isinstance(end_date, str):
         end_date = pd.to_datetime(end_date)
 
@@ -129,8 +130,12 @@ def create_image_from_aggregated_data(end_date, window_hours=24 * 7 * 2):
     # Create the image from the array
     image = Image.fromarray(image_data)
 
-    # Return the image object
-    return image
+    # Save the image to a BytesIO object
+    image_io = BytesIO()
+    image.save(image_io, format='PNG')  # Save as PNG or other format if needed
+    image_io.seek(0)  # Reset the file pointer to the beginning
+
+    return image_io
 
 
 def handle_model(request):
