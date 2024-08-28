@@ -23,6 +23,7 @@ const eventBus = new EventBus([
     "clickedEnterIntoAccount",
     "clickedCreateAnAccount",
     "checkIsAuthenticated",
+    "needPictureNNPPlot",
 ]);
 
 const header = new Header(eventBus);
