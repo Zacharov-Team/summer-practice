@@ -72,6 +72,7 @@ import pandas as pd
 import numpy as np
 from PIL import Image
 
+from io import BytesIO
 import os
 from datetime import datetime
 import warnings
@@ -80,8 +81,7 @@ warnings.filterwarnings("ignore")
 
 # from preproc import *
 # from graph import *
-
-
+RANDOM_SEED = 2023
 
 
 def value_to_color(value):
@@ -95,8 +95,10 @@ def value_to_color(value):
         return (255, 255 - red_intensity, 255 - red_intensity)
 
 
-
 def create_image_from_aggregated_data(end_date, window_hours=24 * 7 * 2):
+    # Convert end_date to a pandas Timestamp if it's a string
+    if isinstance(end_date, str):
+        end_date = pd.to_datetime(end_date)
 
     start_date = end_date - pd.DateOffset(hours=window_hours)
 
@@ -128,23 +130,23 @@ def create_image_from_aggregated_data(end_date, window_hours=24 * 7 * 2):
     # Create the image from the array
     image = Image.fromarray(image_data)
 
-    # Return the image object
-    return image
+    # Save the image to a BytesIO object
+    image_io = BytesIO()
+    image.save(image_io, format='PNG')  # Save as PNG or other format if needed
+    image_io.seek(0)  # Reset the file pointer to the beginning
+
+    return image_io
 
 
 def handle_model(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 401})
+    # if not request.user.is_authenticated:
+    #     return JsonResponse({'status': 401})
 
-    # TODO checkpoint
     flag = request.GET.get('flag')
     # если True - генерим картинку не сервере, иначе  - загружается
-    if flag == True:
+    if flag:
         pd.set_option("display.max_columns", None)
         plt.rcParams["figure.figsize"] = (10, 6)
-
-        RANDOM_SEED = 2023
-
         end_date = request.GET.get('end_date')
         ownFile = create_image_from_aggregated_data(end_date)
     else:
@@ -203,8 +205,8 @@ def log_out(request):
 
 
 def get_modified(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 401})
+    # if not request.user.is_authenticated:
+    #     return JsonResponse({'status': 401})
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
@@ -222,8 +224,8 @@ def get_modified(request):
 
 
 def get_aggregate(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 401})
+    # if not request.user.is_authenticated:
+    #     return JsonResponse({'status': 401})
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
@@ -241,8 +243,8 @@ def get_aggregate(request):
 
 
 def get_initial(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 401})
+    # if not request.user.is_authenticated:
+    #     return JsonResponse({'status': 401})
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
