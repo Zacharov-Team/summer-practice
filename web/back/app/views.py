@@ -67,7 +67,7 @@ from django.utils import timezone
 
 
 
-
+from django.core.files.base import ContentFile
 import pandas as pd
 import numpy as np
 from PIL import Image
@@ -154,6 +154,9 @@ def handle_model(request):
 
     if not ownFile:
         return JsonResponse({'status': 400, 'message': 'No image uploaded'})
+
+    if isinstance(ownFile, BytesIO):
+        ownFile = ContentFile(ownFile.getvalue(), 'image.png')
 
     uploaded_image = Uploads.objects.create(file=ownFile)
     file_path = uploaded_image.file.path
