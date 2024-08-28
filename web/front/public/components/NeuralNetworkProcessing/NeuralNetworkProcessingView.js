@@ -75,8 +75,8 @@ class NeuralNetworkProcessingView {
         const dpDiv = document.createElement("div");
         dpDiv.setAttribute("id", "nnp");
         dpDiv.classList.add("nnp");
-        (dpDiv.innerHTML = (new DivComponent({}, ['nnp-picture', 'calculating'], '', [
-            new DivComponent({}, ['nnp-picture-buttons'], '', [
+        (dpDiv.innerHTML = (new DivComponent({}, ['nnp-picture'], '', [
+            new DivComponent({}, ['nnp-picture-buttons', 'calculating'], '', [
                 new HasInnerTextComponent('button', {id: 'add-picture-nnp'}, ['add-picture-nnp__button'], 'Добавить картинку'),
                 new DivComponent({id: 'picture-choosed'}, ['picture-choosed__p'], 'Картинка не выбрана'),
                 new NoneInnerTextComponent('input', {id: 'add-picture-nnp__input', type: 'file'}, ['add-picture-nnp__input']),
