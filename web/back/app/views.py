@@ -96,6 +96,8 @@ def value_to_color(value):
 
 
 def create_image_from_aggregated_data(end_date, window_hours=24 * 7 * 2):
+    if isinstance(end_date, str):
+        end_date = pd.to_datetime(end_date)
 
     start_date = end_date - pd.DateOffset(hours=window_hours)
 
