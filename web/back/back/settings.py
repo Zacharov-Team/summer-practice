@@ -9,7 +9,7 @@ env.read_env()  # Загрузить переменные из файла .env
 
 
 # Настройки Django
-DEBUG = False
+DEBUG = True
 
 SECRET_KEY = env("SECRET_KEY")
 
