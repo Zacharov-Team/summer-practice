@@ -9,8 +9,8 @@ from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from back.settings import BASE_DIR
 from django.shortcuts import redirect
 
-
 from app.models import *
+
 
 def log_in(request):
     if request.user.is_authenticated:
@@ -65,8 +65,6 @@ from PIL import Image
 import datetime
 from django.utils import timezone
 
-
-
 from django.core.files.base import ContentFile
 import pandas as pd
 import numpy as np
@@ -77,6 +75,7 @@ import os
 from datetime import datetime
 import warnings
 import matplotlib.pyplot as plt
+
 warnings.filterwarnings("ignore")
 
 # from preproc import *
@@ -138,6 +137,15 @@ def create_image_from_aggregated_data(end_date, window_hours=24 * 7 * 2):
     return image_io
 
 
+def color_to_grayscale(color):
+    red, green, blue = color
+    # Normalize the red channel to be between 0 (white) and 1 (black)
+    grayscale_value = red / 255
+    # Invert the grayscale value to match the desired mapping: -1 (red) -> white, 1 (green) -> black
+    grayscale_value = 1 - grayscale_value
+    return int(grayscale_value * 255)
+
+
 def handle_model(request):
     # if not request.user.is_authenticated:
     #     return JsonResponse({'status': 401})
@@ -176,7 +184,15 @@ def handle_model(request):
         return JsonResponse({'status': 500, 'message': 'Ошибка загрузки файла'})
 
     # Загрузка и подготовка изображения
-    img = Image.open(image_path).convert('L')  # конвертация в градации серого
+    img = Image.open(image_path)  # конвертация в градации серого
+    image_data = np.array(img)
+    grayscale_image_data = np.zeros((image_data.shape[0], image_data.shape[1]), dtype=np.uint8)
+    for row in range(image_data.shape[0]):
+        for col in range(image_data.shape[1]):
+            grayscale_image_data[row, col] = color_to_grayscale(image_data[row, col])
+
+    grayscale_image = Image.fromarray(grayscale_image_data, 'L')
+    img = grayscale_image.convert
     img = img.resize((336, 128))  # изменение размера изображения
     input_data = np.array(img).astype(np.float32) / 255.0 * 2 - 1  # нормализация как в обучении
     input_data = input_data.reshape(128, 336, 1)
@@ -195,7 +211,7 @@ def handle_model(request):
     out = result.as_numpy('output_0')
     # Удаление файла после обработки
     uploaded_image.delete()
-    data_values =[ {
+    data_values = [{
         'data': out[0].tolist(),
         'date': timezone.now()
     }]
@@ -220,7 +236,7 @@ def get_modified(request):
     try:
         modified_data = ModifiedData.objects.filter(date__range=[start_date, end_date]).order_by('id')
         data_list = list(modified_data.values())
-        
+
         return JsonResponse({'status': 200, 'data': data_list}, safe=False)
     except Exception as e:
         return JsonResponse({'status': 500, 'error': str(e)}, status=500)
