@@ -14,6 +14,10 @@ class SignInController {
     checkIsAuthenticated() {
         return this.signInModel.checkIsAuthenticated();
     }
+
+    renderView() {
+        this.signInView.render();
+    }
 }
 
 export default SignInController;

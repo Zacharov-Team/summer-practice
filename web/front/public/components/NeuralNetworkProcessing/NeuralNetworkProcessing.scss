@@ -149,3 +149,12 @@
         padding: 5px 10px;
     }
 }
+
+.picture-choosed {
+    &__p {
+        display: flex;
+        align-items: center;
+        color: red;
+        font-family: 'Inter', sans-serif;
+    }
+}

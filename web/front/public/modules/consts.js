@@ -5,3 +5,4 @@ export const DAY_DURATION_HEAT_MAP = 14;
 export const MARKERS_OCHL = ['O', 'C', 'H', 'L'];
 export const MARKERS_OC = ['H', 'L'];
 export const VALID_PICTURE_EXTENSIONS = ['png'];
+export const NUMS_AFTER_DOT = 2;

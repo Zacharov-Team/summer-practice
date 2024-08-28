@@ -23,9 +23,7 @@ class SignInView {
             return;
         }
 
-        while (document.body.childNodes.length > 1) {
-            document.body.removeChild(document.body.lastChild);
-        }
+        document.body.innerHTML = '';
 
         const mailInput = new NoneInnerTextComponent(
             "input",

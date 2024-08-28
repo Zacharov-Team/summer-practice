@@ -31,9 +31,9 @@ const dp = new DataProcessingController(eventBus);
 const nnp = new NeuralNetworkProcessingController(eventBus);
 const signIn = new SignInController(eventBus);
 
-if (await signIn.checkIsAuthenticated()) {
+if (!(await signIn.checkIsAuthenticated())) {
+    signIn.renderView();
+} else {
     header.enteredIntoAccount();
+    rawData.renderRawDataView();
 }
-
-header.render();
-rawData.renderRawDataView();
