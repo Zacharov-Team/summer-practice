@@ -71,6 +71,7 @@ class NeuralNetworkProcessingView {
         (dpDiv.innerHTML = (new DivComponent({}, ['nnp-picture'], '', [
             new DivComponent({}, ['nnp-picture-buttons'], '', [
                 new HasInnerTextComponent('button', {id: 'add-picture-nnp'}, ['add-picture-nnp__button'], 'Добавить картинку'),
+                new DivComponent({id: 'picture-choosed'}, ['picture-choosed__p'], 'Картинка не выбрана'),
                 new NoneInnerTextComponent('input', {id: 'add-picture-nnp__input', type: 'file'}, ['add-picture-nnp__input']),
                 new HasInnerTextComponent('button', {id: 'calc-picture-nnp'}, ['calc-picture-nnp__button'], 'Вычислить'),
             ]),
@@ -157,6 +158,18 @@ class NeuralNetworkProcessingView {
             addPictureInput.click();
         });
 
+        const pictureChoosed = document.getElementById('picture-choosed');
+
+        addPictureInput.addEventListener('change', () => {
+            const picture = addPictureInput.files[0];
+
+            if (!VALID_PICTURE_EXTENSIONS.includes(picture.name.split('.').at(-1))) {
+                pictureChoosed.innerHTML = 'Неправильный формат';
+            } else {
+                pictureChoosed.innerHTML = picture.name;
+            }
+        });
+
         document.getElementById('calc-picture-nnp').addEventListener('click', () => {
 
             if (!addPictureInput.files.length) {
@@ -228,7 +241,7 @@ class NeuralNetworkProcessingView {
     }
 
     updatePictureHeatMap(plotData) {
-        makeHeatPlot(plotData, 2, MARKERS_OC, 'data', 'heatmap-1-plot-div', 600, 'NNP');
+        makeHeatPlot(plotData, 2, MARKERS_OC, 'data', 'heatmap-1-plot-div', 600, 'NNP', true);
     }
 
     updateGlobalHeatMap(plotData) {

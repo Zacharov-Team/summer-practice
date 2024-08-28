@@ -1,6 +1,6 @@
 import NoneInnerTextComponent from '../components/DummyComponents/NoneInnerTextComponent.js';
 import DivComponent from '../components/DummyComponents/DivComponent.js';
-import { NUMS_AFTER_DOT, MARKERS_OCHL, TOOLS_COUNT } from './consts.js';
+import { MARKERS_OCHL, TOOLS_COUNT } from './consts.js';
 
 export function makeLinearPlot(plotData, traces) {
     let flag = true;
@@ -221,7 +221,7 @@ export function makeHeatPlot(plotData, perTool = 4, markersTypes = MARKERS_OCHL,
         hours.push(hourData.date);
     });
 
-    for (let i = TOOLS_COUNT * perTool - 1; i >= 0; i--) {
+    for (let i = 0; i < TOOLS_COUNT * perTool; i++) {
         let zArray = [];
         tools.push(`T. ${Math.floor(i / perTool) + 1}: ${markersTypes[i % perTool]}`);
 
@@ -262,21 +262,27 @@ export function makeHeatPlot(plotData, perTool = 4, markersTypes = MARKERS_OCHL,
     };
 
     if (needTextOnCells) {
-	    strings.forEach((string, index) => {
-	        string.forEach((cell, index2) => {
-	            layout.annotations.push({
-	                x: hours[index2],
-	                y: tools[index],
-	                text: cell.toFixed(NUMS_AFTER_DOT),
-	                font: {
-	                    family: 'Inter',
-	                    size: 9,
-	                    color: 'black',
-	                },
-	                showarrow: false,
-	            });
-	        });
-	    });
     }
+    font: {
+        family: 'Arial',
+        size: 12,
+        color: 'rgb(50, 171, 96)'
+      },
+    strings.forEach((string, index) => {
+        string.forEach((cell, index2) => {
+            layout.annotations.push({
+                x: hours[index2],
+                y: tools[index],
+                text: cell,
+                font: {
+                    family: 'Arial',
+                    size: 12,
+                    color: 'black',
+                },
+                showarrow: false,
+            });
+        });
+    });
+      
     Plotly.newPlot(plotId, data, layout);
 }
