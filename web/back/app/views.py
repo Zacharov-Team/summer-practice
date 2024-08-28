@@ -67,8 +67,8 @@ from django.utils import timezone
 
 
 def handle_model(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 401})
+    # if not request.user.is_authenticated:
+    #     return JsonResponse({'status': 401})
     ownFile = request.FILES.get('img')
     if not ownFile:
         return JsonResponse({'status': 400, 'message': 'No image uploaded'})
