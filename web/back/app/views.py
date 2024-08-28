@@ -138,12 +138,17 @@ def create_image_from_aggregated_data(end_date, window_hours=24 * 7 * 2):
 
 
 def color_to_grayscale(color):
-    red, green, blue = color
-    # Normalize the red channel to be between 0 (white) and 1 (black)
-    grayscale_value = red / 255
-    # Invert the grayscale value to match the desired mapping: -1 (red) -> white, 1 (green) -> black
-    grayscale_value = 1 - grayscale_value
-    return int(grayscale_value * 255)
+    # Если изображение цветное (три канала)
+    if isinstance(color, np.ndarray) and len(color) == 3:
+        red, green, blue = color
+        # Normalize the red channel to be between 0 (white) and 1 (black)
+        grayscale_value = red / 255
+        # Invert the grayscale value to match the desired mapping: -1 (red) -> white, 1 (green) -> black
+        grayscale_value = 1 - grayscale_value
+        return int(grayscale_value * 255)
+    # Если изображение уже черно-белое (один канал)
+    else:
+        return color
 
 
 def handle_model(request):
