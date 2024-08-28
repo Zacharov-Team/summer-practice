@@ -80,8 +80,7 @@ warnings.filterwarnings("ignore")
 
 # from preproc import *
 # from graph import *
-
-
+RANDOM_SEED = 2023
 
 
 def value_to_color(value):
@@ -133,18 +132,14 @@ def create_image_from_aggregated_data(end_date, window_hours=24 * 7 * 2):
 
 
 def handle_model(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 401})
+    # if not request.user.is_authenticated:
+    #     return JsonResponse({'status': 401})
 
-    # TODO checkpoint
     flag = request.GET.get('flag')
     # если True - генерим картинку не сервере, иначе  - загружается
-    if flag == True:
+    if flag:
         pd.set_option("display.max_columns", None)
         plt.rcParams["figure.figsize"] = (10, 6)
-
-        RANDOM_SEED = 2023
-
         end_date = request.GET.get('end_date')
         ownFile = create_image_from_aggregated_data(end_date)
     else:
@@ -203,8 +198,8 @@ def log_out(request):
 
 
 def get_modified(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 401})
+    # if not request.user.is_authenticated:
+    #     return JsonResponse({'status': 401})
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
@@ -222,8 +217,8 @@ def get_modified(request):
 
 
 def get_aggregate(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 401})
+    # if not request.user.is_authenticated:
+    #     return JsonResponse({'status': 401})
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
@@ -241,8 +236,8 @@ def get_aggregate(request):
 
 
 def get_initial(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 401})
+    # if not request.user.is_authenticated:
+    #     return JsonResponse({'status': 401})
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
