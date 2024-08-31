@@ -152,8 +152,8 @@ def color_to_grayscale(color):
 
 
 def handle_model(request):
-    # if not request.user.is_authenticated:
-    #     return JsonResponse({'status': 401})
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 401})
 
     flag = request.GET.get('flag')
     # если True - генерим картинку не сервере, иначе  - загружается
@@ -230,8 +230,8 @@ def log_out(request):
 
 
 def get_modified(request):
-    # if not request.user.is_authenticated:
-    #     return JsonResponse({'status': 401})
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 401})
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
@@ -249,8 +249,8 @@ def get_modified(request):
 
 
 def get_aggregate(request):
-    # if not request.user.is_authenticated:
-    #     return JsonResponse({'status': 401})
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 401})
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
@@ -268,8 +268,8 @@ def get_aggregate(request):
 
 
 def get_initial(request):
-    # if not request.user.is_authenticated:
-    #     return JsonResponse({'status': 401})
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 401})
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
