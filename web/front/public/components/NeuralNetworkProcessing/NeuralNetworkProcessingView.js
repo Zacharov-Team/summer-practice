@@ -48,7 +48,7 @@ class NeuralNetworkProcessingView {
             "button",
             { id: "generate-button" },
             ["calculate-button"],
-            "Вычислить"
+            "Сгенерировать данные"
         );
 
         /*const startDate = new NoneInnerTextComponent(
@@ -76,13 +76,13 @@ class NeuralNetworkProcessingView {
         dpDiv.setAttribute("id", "nnp");
         dpDiv.classList.add("nnp");
         (dpDiv.innerHTML = (new DivComponent({}, ['nnp-picture'], '', [
-            new DivComponent({}, ['nnp-picture-buttons'], '', [
+            new DivComponent({}, ['nnp-picture-buttons', 'calculating'], '', [
                 new HasInnerTextComponent('button', {id: 'add-picture-nnp'}, ['add-picture-nnp__button'], 'Добавить картинку'),
                 new DivComponent({id: 'picture-choosed'}, ['picture-choosed__p'], 'Картинка не выбрана'),
                 new NoneInnerTextComponent('input', {id: 'add-picture-nnp__input', type: 'file'}, ['add-picture-nnp__input']),
                 new HasInnerTextComponent('button', {id: 'calc-picture-nnp'}, ['calc-picture-nnp__button'], 'Вычислить'),
             ]),
-            new DivComponent({}, [], 'Или'),
+            new DivComponent({}, ['hand-or-auto'], 'Или'),
             new DivComponent({ id: "calculating" }, ["calculating"], "", [
                 new DivComponent({}, ['left-side-radios'], '', [
                     new DivComponent(
