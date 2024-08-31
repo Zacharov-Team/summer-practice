@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "app.apps.AppConfig",
 ]
 STATIC_URL = '/back/'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -116,5 +117,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'auth.User'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads_pics')
+STATIC_ROOT = os.path.join(BASE_DIR, 'django_static')
 
 # APPEND_SLASH=False
