@@ -25,6 +25,7 @@ services:
       - "80:80"
     volumes:
       - ./uploads_pics:/uploads_pics/
+      - ./django_static:/django_static/
     networks:
       - app-network
 
