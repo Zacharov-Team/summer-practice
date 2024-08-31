@@ -1,76 +1,78 @@
-openapi: 3.0.3
+openapi: 3.0.0
 info:
-  title: TEAM
-  version: "1.0"
-  description: API документация для проекта
-servers:
-  - url: http://195.133.201.153:8000
+  title: Летняя Практика
+  version: 1.0.0
+  description: API сервиса контроля и анализа данных с использованием модели нейронной сети
+
 paths:
   /login/:
     post:
-      summary: User login
+      summary: Аутентификация пользователя
+      description: Логин пользователя по username и паролю.
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
                 username:
                   type: string
+                  example: user@example.com
                 password:
                   type: string
-              required:
-                - username
-                - password
+                  example: password123
       responses:
         '200':
-          description: Logged in successfully
+          description: Успешная аутентификация
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   status:
-                    type: string
-                  message:
-                    type: string
-                  username:
-                    type: string
-                  name:
-                    type: string
-                  last_name:
-                    type: string
-                  email:
-                    type: string
+                    type: integer
+                    example: 200
+                  user_data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                        example: username
+                      name:
+                        type: string
+                        example: John
+                      last_name:
+                        type: string
+                        example: Doe
+                      email:
+                        type: string
+                        example: user@example.com
         '400':
-          description: Invalid username or password
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                  message:
-                    type: string
-    get:
-      summary: Get CSRF token
-      responses:
-        '200':
-          description: CSRF token
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  csrf_token:
-                    type: string
-  /upload/:
+          description: Неверные учетные данные
+        '500':
+          description: Внутренняя ошибка сервера
+        '401':
+          description: Пользователь уже аутентифицирован
+
+  /upload:
     post:
-      summary: Handle model inference
-      security:
-        - cookieAuth: []
+      summary: Обработка и загрузка изображения
+      description: Генерация изображения или загрузка пользовательского изображения для обработки.
+      parameters:
+        - in: query
+          name: flag
+          schema:
+            type: boolean
+          required: false
+          description: Флаг для указания, генерировать ли изображение на сервере.
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date-time
+          required: false
+          description: Конечная дата для генерации изображения.
       requestBody:
         required: true
         content:
@@ -81,46 +83,27 @@ paths:
                 img:
                   type: string
                   format: binary
-              required:
-                - img
+                  description: Изображение для обработки, если flag=false.
       responses:
         '200':
-          description: Inference result
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      type: number
+          description: Успешная обработка изображения
         '400':
-          description: No image uploaded
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                  message:
-                    type: string
+          description: Не удалось загрузить изображение
+        '500':
+          description: Внутренняя ошибка сервера
+
   /logout/:
-    get:
-      summary: User logout
+    post:
+      summary: Выход пользователя из системы
+      description: Завершение сеанса пользователя.
       responses:
-        '302':
-          description: Redirect to login page
-          headers:
-            Location:
-              schema:
-                type: string
+        '200':
+          description: Пользователь успешно вышел из системы
+
   /get_modified/:
     get:
-      summary: Get modified data within date range
-      security:
-        - cookieAuth: []
+      summary: Получение модифицированных данных
+      description: Возвращает список модифицированных данных за указанный период.
       parameters:
         - in: query
           name: start_date
@@ -128,398 +111,108 @@ paths:
             type: string
             format: date-time
           required: true
-          description: The start date for the data range.
-          example: '2020-05-11T09:00:00'
+          description: Начальная дата выборки данных.
         - in: query
           name: end_date
           schema:
             type: string
             format: date-time
           required: true
-          description: The end date for the data range.
-          example: '2020-05-11T16:00:00'
+          description: Конечная дата выборки данных.
       responses:
         '200':
-          description: Modified data
+          description: Успешный ответ с данными
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      format: date-time
-                      example:
-                        1
-                    date:
-                      type: string
-                      example:
-                        '2020-05-11T09:00:00'
-                    data:
-                      type: array
-                      items:
-                        type: integer
-                      example:
-                        [ 0,0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0]
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
         '400':
-          description: start_date and end_date parameters are required
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+          description: Параметры start_date и end_date обязательны
         '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+          description: Внутренняя ошибка сервера
+
   /get_aggregate/:
     get:
-      summary: Get aggregate data within date range
-      security:
-        - cookieAuth: []
+      summary: Получение агрегированных данных
+      description: Возвращает список агрегированных данных за указанный период.
       parameters:
-        - name: start_date
-          in: query
-          required: true
+        - in: query
+          name: start_date
           schema:
             type: string
-            format: date
-        - name: end_date
-          in: query
+            format: date-time
           required: true
+          description: Начальная дата выборки данных.
+        - in: query
+          name: end_date
           schema:
             type: string
-            format: date
+            format: date-time
+          required: true
+          description: Конечная дата выборки данных.
       responses:
         '200':
-          description: Aggregate data
+          description: Успешный ответ с данными
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    date:
-                      type: string
-                      format: date-time
-                    data_values:
-                      type: array
-                      items:
-                        type: string
-                example:
-                  - id: 1
-                    date: "2020-05-11T12:00:00"
-                    data_values:
-                      - "-0.076545323481708"
-                      - "0.013504685528926"
-                      - "-0.111495314471074"
-                      - "-0.023048354209146"
-                      - "0E-15"
-                      - "-0.125000000000000"
-                      - "-0.042112299465241"
-                      - "0.020387700534759"
-                      - "-0.104612299465241"
-                      - "0.060546875000000"
-                      - "0.085937500000001"
-                      - "-0.039062499999999"
-                      - "0.115384615384617"
-                      - "0.125000000000000"
-                      - "0E-15"
-                      - "0.072739187418083"
-                      - "0.111402359108779"
-                      - "-0.013597640891221"
-                      - "-0.033333333333333"
-                      - "0.052083333333334"
-                      - "-0.072916666666666"
-                      - "-0.009259259259259"
-                      - "0.050925925925926"
-                      - "-0.074074074074074"
-                      - "-0.078313253012048"
-                      - "0.030120481927711"
-                      - "-0.094879518072289"
-                      - "0.091927419354839"
-                      - "0.124991935483871"
-                      - "-0.000008064516129"
-                      - "0.061965811965820"
-                      - "0.123931623931641"
-                      - "-0.001068376068359"
-                      - "-0.074519230769232"
-                      - "0.021634615384615"
-                      - "-0.103365384615385"
-                      - "-0.023780864197531"
-                      - "0.038580246913580"
-                      - "-0.086419753086420"
-                      - "0.026785714285715"
-                      - "0.080357142857143"
-                      - "-0.044642857142857"
-                      - "-0.041666666666666"
-                      - "0.029166666666667"
-                      - "-0.095833333333333"
-                      - "-0.062539038101188"
-                      - "0.007963772642098"
-                      - "-0.117036227357902"
-                      - "-0.072480345405336"
-                      - "0E-15"
-                      - "-0.125000000000000"
-                      - "-0.050287120590650"
-                      - "0.006234618539785"
-                      - "-0.118765381460215"
-                      - "-0.002743055555555"
-                      - "0.056414930555555"
-                      - "-0.068585069444445"
-                      - "-0.047453703703705"
-                      - "0.030092592592592"
-                      - "-0.094907407407408"
-                      - "-0.095344551282053"
-                      - "0.029655448717947"
-                      - "-0.095344551282053"
-                      - "-0.075957875868245"
-                      - "0.013667936365676"
-                      - "-0.111332063634324"
-                      - "0.048902821316615"
-                      - "0.050862068965518"
-                      - "-0.074137931034482"
-                      - "-0.081734458940907"
-                      - "0.011799693016117"
-                      - "-0.113200306983883"
-                      - "-0.013157894736842"
-                      - "0.039473684210526"
-                      - "-0.085526315789474"
-                      - "-0.116148292141072"
-                      - "0.003320836804591"
-                      - "-0.121679163195409"
-                      - "0.081578947368421"
-                      - "0.125000000000000"
-                      - "0E-15"
-                      - "-0.050031250000000"
-                      - "0.043718750000000"
-                      - "-0.081281250000000"
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
         '400':
-          description: start_date and end_date parameters are required
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+          description: Параметры start_date и end_date обязательны
         '500':
-          description: Server error
+          description: Внутренняя ошибка сервера
+
+  /get_initial/:
+    get:
+      summary: Получение исходных данных
+      description: Возвращает список исходных данных за указанный период.
+      parameters:
+        - in: query
+          name: start_date
+          schema:
+            type: string
+            format: date-time
+          required: true
+          description: Начальная дата выборки данных.
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date-time
+          required: true
+          description: Конечная дата выборки данных.
+      responses:
+        '200':
+          description: Успешный ответ с данными
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-components:
-  securitySchemes:
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: sessionid
-  answerScheme:
-    type: object
-
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
+        '400':
+          description: Параметры start_date и end_date обязательны
+        '500':
+          description: Внутренняя ошибка сервера
