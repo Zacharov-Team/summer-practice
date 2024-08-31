@@ -4,30 +4,15 @@ from environs import Env
 import os
 
 env = Env()
-env.read_env()  # Загрузить переменные из файла .env
+env.read_env()
 
-
-
-# Настройки Django
 DEBUG = True
 
 SECRET_KEY = env("SECRET_KEY")
 
-# Set the project base directory
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Raises Django's ImproperlyConfigured
-# exception if SECRET_KEY not in os.environ
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-
-# SECURITY WARNING: don't run with debug turned on in production!
-
 ALLOWED_HOSTS = ['195.133.201.153', '127.0.0.1', 'localhost']
-
-# Application definition
 
 INSTALLED_APPS = [
     'corsheaders',
@@ -45,7 +30,6 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -91,9 +75,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'back.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -122,9 +103,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'Europe/Moscow'
@@ -133,13 +111,10 @@ USE_I18N = True
 
 USE_TZ = False
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'auth.User'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads_pics')  # Путь до директории, куда будут сохраняться файлы
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads_pics')
 
 # APPEND_SLASH=False
