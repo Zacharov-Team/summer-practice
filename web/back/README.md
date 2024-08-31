@@ -77,4 +77,26 @@ npm install
 npm run start &
 ``` 
 
- 
+### команды
+Дополнительные команды, которые можно выполнить на сервере в папке web/back:
+Для заполнения бд:
+```bash
+python3 manage.py fill_db.py
+```
+
+Для создания пользователя:
+```bash
+python3 manage.py make_admin
+```
+
+Для тестирования Triton запросом:
+Если нужно провести тестирование с помощью картинки:
+```bash
+python3 manage.py handler_test pic
+```
+Нужно будет загрузить картинку в папку uploads_dataset, и далее указать ее название
+
+Для тестирования путем загрузки тензора
+```bash
+python3 manage.py handler_test random
+```
