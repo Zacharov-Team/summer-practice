@@ -14,8 +14,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data/
     restart: unless-stopped
-    networks:
-      - app-network
+
 
   nginx:
     build:
@@ -26,29 +25,7 @@ services:
     volumes:
       - ./uploads_pics:/uploads_pics/
       - ./django_static:/django_static/
-    networks:
-      - app-network
-
-#  web:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    container_name: django-web
-#    ports:
-#      - "8000:8000"
-#    volumes:
-#      - .:/app
-#    depends_on:
-#      - pgdb
-#    environment:
-#      - DJANGO_SETTINGS_MODULE=back.settings
-#    networks:
-#      - app-network
 
 volumes:
   pg_data:
   nginx_data:
-
-networks:
-  app-network:
-    driver: bridge

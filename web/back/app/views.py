@@ -1,13 +1,9 @@
 import json
-import os
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
-from django.middleware.csrf import get_token
-from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from back.settings import BASE_DIR
-from django.shortcuts import redirect
+
 
 from app.models import *
 
@@ -78,75 +74,61 @@ import matplotlib.pyplot as plt
 
 warnings.filterwarnings("ignore")
 
-# from preproc import *
-# from graph import *
 RANDOM_SEED = 2023
 
 
 def value_to_color(value):
     if value >= 0:
         green_intensity = int(255 * value)
-        green_intensity = np.clip(green_intensity, 0, 255)  # Clamping the values
+        green_intensity = np.clip(green_intensity, 0, 255)
         return (255 - green_intensity, 255, 255 - green_intensity)
     else:
         red_intensity = int(255 * abs(value))
-        red_intensity = np.clip(red_intensity, 0, 255)  # Clamping the values
+        red_intensity = np.clip(red_intensity, 0, 255)
         return (255, 255 - red_intensity, 255 - red_intensity)
 
 
 def create_image_from_aggregated_data(end_date, window_hours=24 * 7 * 2):
-    # Convert end_date to a pandas Timestamp if it's a string
     if isinstance(end_date, str):
         end_date = pd.to_datetime(end_date)
 
     start_date = end_date - pd.DateOffset(hours=window_hours)
 
-    # Fetch data from the Django model
     aggregated_data = AggregatedData.objects.filter(date__range=[start_date, end_date]).order_by('date')
     data_list = list(aggregated_data.values('date', 'data_values'))
 
     if not data_list:
         raise ValueError("No data available for the specified date range.")
 
-    # Convert the list to a DataFrame
     df = pd.DataFrame(data_list)
     df['date'] = pd.to_datetime(df['date'])
     df = df.set_index('date')
 
-    # Determine the image dimensions
-    image_height = len(df)  # Number of rows corresponds to the number of data points
-    image_width = len(df['data_values'].iloc[0])  # Number of columns corresponds to the length of data_values array
+    image_height = len(df)
+    image_width = len(df['data_values'].iloc[0])
 
-    # Create an empty image array
     image_data = np.zeros((image_height, image_width, 3), dtype=np.uint8)
 
-    # Populate the image array with data
     for row in range(image_height):
         for col in range(image_width):
             value = df['data_values'].iloc[row][col]
             image_data[row, col] = value_to_color(value)
 
-    # Create the image from the array
     image = Image.fromarray(image_data)
 
-    # Save the image to a BytesIO object
     image_io = BytesIO()
-    image.save(image_io, format='PNG')  # Save as PNG or other format if needed
-    image_io.seek(0)  # Reset the file pointer to the beginning
+    image.save(image_io, format='PNG')
+    image_io.seek(0)
 
     return image_io
 
 
 def color_to_grayscale(color):
-    # Если изображение цветное (три канала)
     if isinstance(color, np.ndarray) and len(color) == 3:
         red, green, blue = color
-        # Normalize the red channel to be between 0 (white) and 1 (black)
         grayscale_value = red / 255
-        # Invert the grayscale value to match the desired mapping: -1 (red) -> white, 1 (green) -> black
         grayscale_value = 1 - grayscale_value
         return int(grayscale_value * 255)
-    # Если изображение уже черно-белое (один канал)
     else:
         return color
 
@@ -156,7 +138,6 @@ def handle_model(request):
         return JsonResponse({'status': 401})
 
     flag = request.GET.get('flag')
-    # если True - генерим картинку не сервере, иначе  - загружается
     if flag:
         pd.set_option("display.max_columns", None)
         plt.rcParams["figure.figsize"] = (10, 6)
@@ -181,15 +162,13 @@ def handle_model(request):
         url="0.0.0.0:8001"
     )
 
-    # Путь к файлу изображения
     image_path = os.path.join(BASE_DIR, file_path)
 
     if not os.path.exists(image_path):
         print(f'Файл {image_path} не найден.')
         return JsonResponse({'status': 500, 'message': 'Ошибка загрузки файла'})
 
-    # Загрузка и подготовка изображения
-    img = Image.open(image_path)  # конвертация в градации серого
+    img = Image.open(image_path)
     image_data = np.array(img)
     grayscale_image_data = np.zeros((image_data.shape[0], image_data.shape[1]), dtype=np.uint8)
     for row in range(image_data.shape[0]):
@@ -197,10 +176,9 @@ def handle_model(request):
             grayscale_image_data[row, col] = color_to_grayscale(image_data[row, col])
 
     grayscale_image = Image.fromarray(grayscale_image_data, 'L')
-    img = grayscale_image.convert('L')  # Правильное преобразование в изображение в градациях серого
+    img = grayscale_image.convert('L')
     img = img.resize((336, 128))
-    # img = img.resize((336, 128))  # изменение размера изображения
-    input_data = np.array(img).astype(np.float32) / 255.0 * 2 - 1  # нормализация как в обучении
+    input_data = np.array(img).astype(np.float32) / 255.0 * 2 - 1
     input_data = input_data.reshape(128, 336, 1)
 
     input_data = input_data.reshape([-1] + list(input_data.shape))
@@ -215,7 +193,6 @@ def handle_model(request):
         model_name="resnet18", inputs=inputs, outputs=outputs
     )
     out = result.as_numpy('output_0')
-    # Удаление файла после обработки
     uploaded_image.delete()
     data_values = [{
         'data': out[0].tolist(),

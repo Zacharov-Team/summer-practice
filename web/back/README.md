@@ -42,8 +42,9 @@ pip install numpy
 pip install torch
 ```
 
+Для запуска
+nohup gunicorn -b 0.0.0.0:8000 back.wsgi:application &
 
-gunicorn -b 0.0.0.0:80 back.wsgi:application
  
 
  
